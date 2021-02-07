@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.2.6.RELEASE</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>com.middleware360.camel</groupId>
+  <artifactId>salesforce-prototype</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <name>A Camel Spring Route</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <camel-salesforce-maven-plugin.version>3.2.0</camel-salesforce-maven-plugin.version>
+
+    <!-- salesforce properties -->
+    <camelSalesforce.clientId>3MVG9kBt168mda__rcKyhzwx5kPrjKFZPpYuGV2pt3nYp2HruTfa_rFRhTtaB0s2exvv7v0WV.JqEWjvK5o6L</camelSalesforce.clientId>
+    <camelSalesforce.clientSecret>AC7E55758D52FD8737297F9388C6BD53072A1876053E1BC07B607687E9B7A541</camelSalesforce.clientSecret>
+    <camelSalesforce.userName>shane-lucyk@hotmail.com</camelSalesforce.userName>
+    <camelSalesforce.password>LordOfTheAbyss96</camelSalesforce.password>
+    <camelSalesforce.token>C7ArABigdxXcTfxxvfZfHSg3</camelSalesforce.token>
+
+    <camelSalesforce.loginUrl>https://na172.salesforce.com</camelSalesforce.loginUrl>
+<!--    <camelSalesforce.loginUrl>https://login.salesforce.com/</camelSalesforce.loginUrl>-->
+
+    <camel.version>3.2.0</camel.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+
+
+
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-bom</artifactId>
+        <version>${camel.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Camel BOM -->
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-parent</artifactId>
+        <version>${camel.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <id>java-sdk</id>
+      <url>https://maven.zohodl.com</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.zoho.crm</groupId>
+      <artifactId>java-sdk</artifactId>
+      <version>2.1.3</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-quartz</artifactId>
+      <version>3.2.0</version>
+      <!-- use the same version as your Camel core version -->
+    </dependency>
+
+
+
+    <dependency>
+      <groupId>org.apache.camel.springboot</groupId>
+      <artifactId>camel-quartz-starter</artifactId>
+      <version>3.2.0</version>
+
+    </dependency>
+
+
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-jpa</artifactId>
+      </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-jdbc</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.camel.springboot</groupId>
+          <artifactId>camel-spring-boot-starter</artifactId>
+          <version>${camel.version}</version>
+      </dependency>
+      <dependency>
+      <groupId>org.apache.camel.maven</groupId>
+      <artifactId>camel-salesforce-maven-plugin</artifactId>
+      <version>${camel-salesforce-maven-plugin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-salesforce</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- logging -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- testing -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.junit.vintage</groupId>
+          <artifactId>junit-vintage-engine</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-test-spring</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.camel.maven</groupId>
+        <artifactId>camel-salesforce-maven-plugin</artifactId>
+        <version>${camel-salesforce-maven-plugin.version}</version>
+        <configuration>
+          <clientId>${camelSalesforce.clientId}</clientId>
+          <clientSecret>${camelSalesforce.clientSecret}</clientSecret>
+          <userName>${camelSalesforce.userName}</userName>
+          <password>${camelSalesforce.password}${camelSalesforce.token}</password>
+          <loginUrl default-value="https://login.salesforce.com">${camelSalesforce.loginUrl}</loginUrl>
+          <includes>
+            <include>Account</include>
+            <include>Activity</include>
+            <include>Asset</include>
+            <include>AssetRelationship</include>
+            <include>AssignedResource</include>
+            <include>AuthorizationForm</include>
+            <include>AuthorizationFormConsent</include>
+            <include>AuthorizationFormDataUse</include>
+            <include>AuthorizationFormText</include>
+            <include>Campaign</include>
+            <include>CampaignMember</include>
+            <include>CardPaymentMethod</include>
+            <include>Case</include>
+            <include>CommSubscription</include>
+            <include>CommSubscriptionChannelType</include>
+            <include>CommSubscriptionConsent</include>
+            <include>CommSubscriptionTiming</include>
+            <include>ConsumptionRate</include>
+            <include>ConsumptionSchedule</include>
+            <include>Contact</include>
+            <include>ContactPointConsent</include>
+            <include>ContactPointEmail</include>
+            <include>ContactPointPhone</include>
+            <include>ContactPointTypeConsent</include>
+            <include>ContactRequest</include>
+            <include>ContentVersion</include>
+            <include>Contract</include>
+            <include>CreditMemo</include>
+            <include>CreditMemoLine</include>
+            <include>DandBCompany</include>
+            <include>DataUseLegalBasis</include>
+            <include>DataUsePurpose</include>
+            <include>DigitalWallet</include>
+            <include>DuplicateRecordItem</include>
+            <include>DuplicateRecordSet</include>
+            <include>EmailMessage</include>
+            <include>EngagementChannelType</include>
+            <include>Event</include>
+            <include>Image</include>
+            <include>Individual</include>
+            <include>Invoice</include>
+            <include>InvoiceLine</include>
+            <include>Lead</include>
+            <include>ListEmail</include>
+            <include>Macro</include>
+            <include>MessagingSession</include>
+            <include>MessagingEndUser</include>
+            <include>OperatingHours</include>
+            <include>Opportunity</include>
+            <include>OpportunityContactRole</include>
+            <include>OpportunityLineItem</include>
+            <include>Order</include>
+            <include>OrderItem</include>
+            <include>PartyConsent</include>
+            <include>Payment</include>
+            <include>PaymentAuthorization</include>
+            <include>PaymentGateway</include>
+            <include>PaymentGroup</include>
+            <include>PaymentLineInvoice</include>
+            <include>Pricebook2</include>
+            <include>PricebookEntry</include>
+            <include>Product2</include>
+            <include>ProductConsumptionSchedule</include>
+            <include>QuickText</include>
+            <include>Recommendation</include>
+            <include>Refund</include>
+            <include>RefundLinePayment</include>
+            <include>ResourceAbsence</include>
+            <include>ResourcePreference</include>
+            <include>RevenueElement</include>
+            <include>Scorecard</include>
+            <include>ScorecardAssociation</include>
+            <include>ScorecardMetric</include>
+            <include>ServiceAppointment</include>
+            <include>ServiceResource</include>
+            <include>ServiceResourceSkill</include>
+            <include>ServiceTerritory</include>
+            <include>ServiceTerritoryMember</include>
+            <include>ServiceTerritoryWorkType</include>
+            <include>SkillRequirement</include>
+            <include>SocialPersona</include>
+            <include>Task</include>
+            <include>TimeSlot</include>
+            <include>User</include>
+            <include>UserProvisioningRequest</include>
+            <include>WorkType</include>
+            <include>WorkTypeGroup</include>
+            <include>WorkTypeGroupMember</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
