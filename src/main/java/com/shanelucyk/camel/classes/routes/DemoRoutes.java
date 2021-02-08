@@ -42,7 +42,11 @@ public class DemoRoutes extends RouteBuilder {
     SeperateContactProcessor seperateContactProcessor;
 
     @Autowired
-    PrepContactCreateProcessor prepContactCreateProcessor;
+    ConvertZohoContactProcessor convertZohoContactProcessor;
+
+    @Autowired
+    ConvertZohoAccountProcessor convertZohoAccountProcessor;
+
 
     @Autowired
     BuildBatchProcessor buildBatchProcessor;
@@ -59,6 +63,9 @@ public class DemoRoutes extends RouteBuilder {
     @Autowired
     SeperateAccountProcessor seperateAccountProcessor;
 
+    @Autowired
+    BuildContactEmailIdMapProcessor buildContactEmailIdMapProcessor;
+
     @Override
     public void configure() throws Exception {
         log.info("Starting RestRoutes");
@@ -67,170 +74,161 @@ public class DemoRoutes extends RouteBuilder {
         camelContext.setUseBreadcrumb(true);
         camelContext.setStreamCaching(true);
 
-//        from("quartz://myGroup/testScheduler?trigger.repeatInterval=1&trigger.repeatCount=0&startDelayedSeconds=5")
-//        .to("direct:getAllSFContacts");
-
-
-        from("direct:createContactTest").routeId("testContactCreate") //To Create an Contact. Required Field: Last Name
-                .log("Before Create Contact")
-                .process(exchange -> {
-                    Contact contact = new Contact();
-                    contact.setFirstName("Shane");
-                    contact.setLastName("Test2");
-                    contact.setDescription("123456789" + "_" + "Description");
-//                    contact.setAccountId("123456789");
-                    exchange.getIn().setBody(contact);
-                })
-                .to("salesforce:createSObject")
-                .log("After Contact Creation");
-
-
-        from("direct:getAllSFContacts")
-                .process(exchange -> {
-                    String allCustomFieldsQuery = QueryHelper.queryToFetchFilteredFieldsOf(new Account(), SObjectField::isCustom);
-                    log.info("AllCustomFieldsQueryString: {}", allCustomFieldsQuery);
-                    String queryString = "SELECT Name FROM Contact";
-                    exchange.setProperty("queryString", queryString);
-                })
-                .setHeader("sObjectQuery", simple("SELECT Name FROM Contact"))
-                .to("salesforce:query?sObjectQuery=&sObjectClass=" + QueryRecordsContact.class.getName())
-                .log("${body}")
-                .process(exchange -> {
-                    QueryRecordsContact contacts = exchange.getIn().getBody(QueryRecordsContact.class);
-                    log.info(contacts.getRecords().get(0).getName());
-                });
-
-        from("direct:createAccountTest").routeId("Test") //To Create an Account. Required Field: NAME, Desc, Number
-                .log("Before Create Object")
-                .to("salesforce:createSObject")
-                .log("After Account Creation")
-        ;
-
-
 
 //        from("quartz://myGroup/contactScheduler?cron=0+50+*+?+*+MON-FRI")
         from("quartz://myGroup/contactScheduler?trigger.repeatInterval=1&trigger.repeatCount=0&startDelayedSeconds=5")
                 .routeId("QuartzAccountSchedulerRoute").log("QuartsScheduler Triggered")
-                //Accounts Processing:
+
+                // Accounts Processing
                 .process(retrieveZohoAccountProcessor)
                 .log("Zoho Accounts Retrieved")
-                .to("direct:getSFAccountNames")
+                .to("direct:getAccountNameIdMap")
                 .process(seperateAccountProcessor)
-//                .log("Zoho Contacts Retrieved")
-//                .to("direct:getSalesforceContactEmails")
-//                .to("salesforce:createSObject")
-                .log("After CAccount")
-        ;
+                .choice()
+                    .when(simple("${exchangeProperty.createList.size} != 0"))
+                        .to("direct:createAccounts")
+                    .otherwise().log("No Accounts to Create")
+                .end()
 
-//                //Contacts Processing:
-//                .process(retrieveZohoContactsProcessor)
-//                .log("Zoho Contacts Retrieved")
-//                .to("direct:getSalesforceContactEmails")
-//                .to("direct:getAccountNameIdMap")
-//                .process(seperateContactProcessor);
-//                .to("direct:createContacts");
+                .choice()
+                    .when(simple("${exchangeProperty.updateList.size} != 0"))
+                        .to("direct:updateAccounts")
+                    .otherwise().log("No Accounts to Update")
+                .end()
+                .log("After Accounts Are Finished")
 
+                //Cleanup Properties before Contact Run
+                .removeProperty("accountNames")
+                .removeProperty("accountMap")
+                .removeProperty("createList")
+                .removeProperty("updateList")
+                .removeProperty("processList")
+
+                //Contact Processing
+                .process(retrieveZohoContactsProcessor)
+                .log("Zoho Contacts Retrieved")
+                .to("direct:getSalesforceContactEmails")
+                .to("direct:getAccountNameIdMap")
+                .to("direct:getContactIdMap")
+                .process(seperateContactProcessor)
+                .choice()
+                    .when(simple("${exchangeProperty.createList.size} != 0"))
+                        .to("direct:createContacts")
+                    .otherwise().log("No Contacts to Create")
+                .end()
+
+                .choice()
+                    .when(simple("${exchangeProperty.updateList.size} != 0"))
+                        .to("direct:updateContacts")
+                    .otherwise().log("No Contacts to Update")
+                .end()
+                .log("After Contact Creation");
+
+        /*
+        * Account Creation Logic
+        * */
+        from("direct:createAccounts").routeId("CreateNewAccountsRoutes")
+                .log("Creating New Accounts")
+                .setProperty("updateFlag", constant(false))
+                .setProperty("processList", simple("${exchangeProperty.createList}"))
+                .process(convertZohoAccountProcessor)
+                .loop(simple("${exchangeProperty.processList.size()}")).copy()
+                    .log("Index: ${exchangeProperty.CamelLoopIndex}")
+                    .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
+                    .to("salesforce:createSObject")
+                .end()
+            .end();
+
+        /*
+         * Account Update Logic
+         * */
+        from("direct:updateAccounts").routeId("UpdateAccountsRoutes")
+                .log("Updating Accounts")
+                .setProperty("processList", simple("${exchangeProperty.updateList}"))
+                .setProperty("updateFlag", constant(true))
+                .process(convertZohoAccountProcessor)
+                .loop(simple("${exchangeProperty.processList.size()}")).copy()
+                    .log("Index: ${exchangeProperty.CamelLoopIndex}")
+                    .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
+                    .log("Before to: ${body}")
+                    .to("salesforce:upsertSObject?sObjectIdName=Id")
+                .end()
+            .end();
+
+
+        /*
+         * Contact Creation Logic
+         * */
+        from("direct:createContacts").routeId("CreateNewContactRoutes")
+                .log("Creating New Contacts")
+                .setProperty("updateFlag", constant(false))
+                .setProperty("processList", simple("${exchangeProperty.createList}"))
+                .process(convertZohoContactProcessor)
+                .loop(simple("${exchangeProperty.processList.size()}")).copy()
+                    .log("Index: ${exchangeProperty.CamelLoopIndex}")
+                    .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
+                    .log("${body}")
+                    .to("salesforce:createSObject")
+                .end()
+            .end();
+
+
+        /*
+         * Contact Update Logic
+         * */
+        from("direct:updateContacts").routeId("UpdateContactRoutes")
+                .log("Updating Contacts")
+                .setProperty("updateFlag", constant(true))
+                .setProperty("processList", simple("${exchangeProperty.updateList}"))
+                .process(convertZohoContactProcessor)
+                .loop(simple("${exchangeProperty.processList.size()}")).copy()
+                    .log("Index: ${exchangeProperty.CamelLoopIndex}")
+                    .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
+                    .to("salesforce:upsertSObject?sObjectIdName=Id")
+                .end()
+            .end();
+
+        //Query Functions
+
+        //Get ALL Account Names. currently name is key field.
         from("direct:getSFAccountNames")
                 .setHeader("sObjectQuery", simple("SELECT Name FROM Account"))
                 .to("salesforce:query?sObjectQuery=&sObjectClass=" + QueryRecordsAccount.class.getName())
                 .process(getSalesforceAccountNamesProcessor);
 
+        //Get ALL Contact Emails. currently Email is key field.
         from("direct:getSalesforceContactEmails")
                 .setHeader("sObjectQuery", simple("SELECT Email FROM Contact"))
                 .to("salesforce:query?sObjectQuery=&sObjectClass=" + QueryRecordsContact.class.getName())
                 .process(getSalesforceContactEmailsProcessor);
 
+        //Get Name to ID Map for Accounts
         from("direct:getAccountNameIdMap")
                 .setHeader("sObjectQuery", simple("SELECT Id, Name FROM Account"))
                 .to("salesforce:query?sObjectQuery=&sObjectClass=" + QueryRecordsAccount.class.getName())
                 .process(buildAccountNameIdMapProcessor);
 
-
-
-
-
-        /*
-        * Account Creation Logic
-        *
-        *
-        *
-        * */
-
-
-
-
-
-        from("direct:createContacts").routeId("CreateNewContactRoutes")
-                .log("Creating New Contacts")
-                .process(prepContactCreateProcessor)
-                .log("REPLACE ME WITH ACCOUNT LOOKUP")
-//                .setBody(simple("${exchangeProperty.createList}"))
-                .loop(simple("${exchangeProperty.createList.size()}")).copy()
-                    .log("Index: ${exchangeProperty.CamelLoopIndex}")
-                    .setBody(simple("${exchangeProperty.createList[${exchangeProperty.CamelLoopIndex}]}"))
-                    .to("direct:createAccountTest")
-                .end()
-                .log("After Creation")
-//                .process(buildBatchProcessor)
-//                .to("salesforce:composite-batch?format=JSON")
-//                .log("AFter Coimposite Batch")
-                .end();
-
-//                .loop().jsonpath("$.length()").copy()
+        //Get Email to ID Map for Contacts
+        from("direct:getContactIdMap")
+                .setHeader("sObjectQuery", simple("SELECT Id, Email FROM Contact"))
+                .to("salesforce:query?sObjectQuery=&sObjectClass=" + QueryRecordsContact.class.getName())
+                .process(buildContactEmailIdMapProcessor);
 //
-//                .process(exchange -> {
-//                    ArrayList<ZCRMRecord> createList = exchange.;
+//        from("direct:queryById")
+//            .to("log:queryById?level=INFO&showBody=true&showHeaders=true&multiline=true")
+//            .toD("salesforce:getSObject" +
+//                    "?" + FORMAT + "=" + salesforceContext.getSalesforceResponseFormat() +
+//                    "&" + SOBJECT_CLASS  + "=${header."+SOBJECT_CLASS+"}" +
+//                    "&" + SOBJECT_NAME   + "=${header."+SOBJECT_NAME+"}" +
+//                    "&" + SOBJECT_FIELDS + "=${header."+SOBJECT_FIELDS+"}"
+//            );
 //
-//                    Account acc = new Account();
-//                    acc.setAccountNumber("123456789");
-//                    acc.setDescription("TestAccount");
-//                    acc.setName("ShanesTestAccount1");
-//                    exchange.getIn().setBody(acc);
-//                })
-//                .to("salesforce:createSObject");
-
-
-        from("quartz://myGroup/AccountScheduler?cron=0+35+*+?+*+MON-FRI")
-//        from("quartz://myGroup/contactScheduler?trigger.repeatInterval=1&trigger.repeatCount=0&startDelayedSeconds=5")
-                .routeId("QuartzContactSchedulerRoute").log("QuartsContactScheduler Triggered")
-                .process(exchange -> {
-
-                    log.info("After Client Init");
-                    ZCRMModule mod = zohoConfig.getZohoClient().getModuleInstance("contacts");
-                    log.info("After Module Retrieval");
-                    BulkAPIResponse records = mod.getRecords();
-                    log.info("After Contact Records Retrieval");
-                    log.info(records.getResponseJSON().toString());
-                    ArrayList<ZCRMRecord> contacts = (ArrayList<ZCRMRecord>) records.getData();
-//        for(ZCRMRecord rec: contacts){
-//            String accountNameObj = (String) rec.getFieldValue("Full_Name");
-//            log.info("Full Name: {}", accountNameObj);
-//        }
-
-                    exchange.setProperty("Contacts", contacts);
-                })
-                .log("Contacts Retrieved");
-
-
-        from("direct:logString")
-            .convertBodyTo(String.class)
-            .to("log:demoRoute?level=INFO&showBody=true&multiline=true");
-
-        from("direct:queryById")
-            .to("log:queryById?level=INFO&showBody=true&showHeaders=true&multiline=true")
-            .toD("salesforce:getSObject" +
-                    "?" + FORMAT + "=" + salesforceContext.getSalesforceResponseFormat() +
-                    "&" + SOBJECT_CLASS  + "=${header."+SOBJECT_CLASS+"}" +
-                    "&" + SOBJECT_NAME   + "=${header."+SOBJECT_NAME+"}" +
-                    "&" + SOBJECT_FIELDS + "=${header."+SOBJECT_FIELDS+"}"
-            );
-
-        from("direct:getWithId")
-            .to("log:getWithId?level=INFO&showBody=true&showHeaders=true&multiline=true")
-            .toD("salesforce:getSObjectWithId" +
-                    "?" + FORMAT + "=" + salesforceContext.getSalesforceResponseFormat() +
-                    "&" + SOBJECT_NAME + "=${header."+SOBJECT_NAME+"}" +
-                    "&" + SOBJECT_EXT_ID_NAME + "=${header."+SOBJECT_EXT_ID_NAME+"}"
-            );
+//        from("direct:getWithId")
+//            .to("log:getWithId?level=INFO&showBody=true&showHeaders=true&multiline=true")
+//            .toD("salesforce:getSObjectWithId" +
+//                    "?" + FORMAT + "=" + salesforceContext.getSalesforceResponseFormat() +
+//                    "&" + SOBJECT_NAME + "=${header."+SOBJECT_NAME+"}" +
+//                    "&" + SOBJECT_EXT_ID_NAME + "=${header."+SOBJECT_EXT_ID_NAME+"}"
+//            );
     }
 }

@@ -24,7 +24,6 @@ public class GetSalesforceContactEmailsProcessor implements Processor {
         QueryRecordsContact contacts = exchange.getIn().getBody(QueryRecordsContact.class);
         ArrayList<String> emails = new ArrayList<>();
         for(Contact c: contacts.getRecords()){
-//                                log.info(c.getEmail());
             emails.add(c.getEmail());
         }
         exchange.setProperty("SalesforceContactEmails", emails);

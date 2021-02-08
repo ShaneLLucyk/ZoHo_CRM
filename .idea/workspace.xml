@@ -22,7 +22,24 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="51f54fea-e956-4523-8612-a2531da54a3d" name="Default Changelist" comment="" />
+    <list default="true" id="51f54fea-e956-4523-8612-a2531da54a3d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/BuildContactEmailIdMapProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/GetSalesforceContactEmailsProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/GetSalesforceContactEmailsProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/PrepContactCreateProcessor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SeperateAccountProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SeperateAccountProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/routes/DemoRoutes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/routes/DemoRoutes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/oauthtokens.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/oauthtokens.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/DemoApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/DemoApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/context/SalesforceContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/context/SalesforceContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/PrepContactCreateProcessor.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/SeperateAccountProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/SeperateAccountProcessor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/routes/DemoRoutes.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/routes/DemoRoutes.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/oauthtokens.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/oauthtokens.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/com/shanelucyk/camel/BasicTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/com/shanelucyk/camel/SalesforceQueryTest.class" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -152,55 +169,55 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="265" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612569512881" />
-    <state x="1036" y="208" key="#xdebugger.evaluate" timestamp="1612664950655">
+    <state x="1036" y="208" key="#xdebugger.evaluate" timestamp="1612743455606">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="1036" y="208" key="#xdebugger.evaluate/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612664950655" />
+    <state x="1036" y="208" key="#xdebugger.evaluate/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612743455606" />
     <state x="-1180" y="245" key="FileChooserDialogImpl" timestamp="1612675779882">
       <screen x="-1920" y="0" width="1920" height="1040" />
     </state>
     <state x="-1180" y="245" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612675779882" />
     <state x="740" y="245" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612541931841" />
-    <state width="1876" height="277" key="GridCell.Tab.0.bottom" timestamp="1612672672808">
-      <screen x="-1920" y="0" width="1920" height="1040" />
+    <state width="1876" height="277" key="GridCell.Tab.0.bottom" timestamp="1612743665296">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="277" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612672672808" />
-    <state width="1876" height="277" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612665424951" />
-    <state width="1876" height="277" key="GridCell.Tab.0.center" timestamp="1612672672808">
-      <screen x="-1920" y="0" width="1920" height="1040" />
+    <state width="1876" height="277" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612743665296" />
+    <state width="1876" height="277" key="GridCell.Tab.0.center" timestamp="1612743665296">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="277" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612672672808" />
-    <state width="1876" height="277" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612665424951" />
-    <state width="1876" height="277" key="GridCell.Tab.0.left" timestamp="1612672672808">
-      <screen x="-1920" y="0" width="1920" height="1040" />
+    <state width="1876" height="277" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612743665296" />
+    <state width="1876" height="277" key="GridCell.Tab.0.left" timestamp="1612743665296">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="277" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612672672808" />
-    <state width="1876" height="277" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612665424951" />
-    <state width="1876" height="277" key="GridCell.Tab.0.right" timestamp="1612672672808">
-      <screen x="-1920" y="0" width="1920" height="1040" />
+    <state width="1876" height="277" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612743665296" />
+    <state width="1876" height="277" key="GridCell.Tab.0.right" timestamp="1612743665296">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="277" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612672672808" />
-    <state width="1876" height="277" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612665424951" />
-    <state width="1876" height="342" key="GridCell.Tab.1.bottom" timestamp="1612665045488">
+    <state width="1876" height="277" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612743665296" />
+    <state width="1876" height="342" key="GridCell.Tab.1.bottom" timestamp="1612743523300">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="342" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612663383461" />
-    <state width="1876" height="342" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612665045488" />
-    <state width="1876" height="342" key="GridCell.Tab.1.center" timestamp="1612665045488">
+    <state width="1876" height="342" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612743523300" />
+    <state width="1876" height="342" key="GridCell.Tab.1.center" timestamp="1612743523300">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="342" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612663383460" />
-    <state width="1876" height="342" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612665045488" />
-    <state width="1876" height="342" key="GridCell.Tab.1.left" timestamp="1612665045488">
+    <state width="1876" height="342" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612743523300" />
+    <state width="1876" height="342" key="GridCell.Tab.1.left" timestamp="1612743523300">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="342" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612663383460" />
-    <state width="1876" height="342" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612665045488" />
-    <state width="1876" height="342" key="GridCell.Tab.1.right" timestamp="1612665045488">
+    <state width="1876" height="342" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612743523300" />
+    <state width="1876" height="342" key="GridCell.Tab.1.right" timestamp="1612743523300">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="342" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612663383461" />
-    <state width="1876" height="342" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612665045488" />
+    <state width="1876" height="342" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612743523300" />
     <state x="490" y="173" key="Maven.ArtifactSearchDialog" timestamp="1612495719459">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -246,7 +263,7 @@
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/PrepContactCreateProcessor.java</url>
+          <url>file://$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/ConvertZohoContactProcessor.java</url>
           <line>88</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
@@ -256,9 +273,9 @@
           <option name="timeStamp" value="21" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SeperateAccountProcessor.java</url>
-          <line>36</line>
-          <option name="timeStamp" value="22" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/ConvertZohoAccountProcessor.java</url>
+          <line>78</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

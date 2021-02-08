@@ -17,7 +17,7 @@ import java.util.logging.SimpleFormatter;
 
 @Slf4j
 @Configuration
-public class PrepContactCreateProcessor implements Processor {
+public class ConvertZohoContactProcessor implements Processor {
 
 
     @Override
@@ -25,18 +25,27 @@ public class PrepContactCreateProcessor implements Processor {
         log.info("Process: Starting Contact Transformation");
         ArrayList<Contact> newContacts = new ArrayList<>();
         log.info("Converting ZOHO Contacts to Salesforce");
-        // NOTES For account handling
-        //Build list of Account Name to ID strings. PRE Contact Load.
-        //Use to populate new Account field.
+
+
         HashMap<String, String> accountMap = exchange.getProperty("accountMap", HashMap.class);
+        boolean update = exchange.getProperty("updateFlag", Boolean.class);
+        HashMap<String, String> contactMap = null;
+        if(update){
+            contactMap = exchange.getProperty("contactMap", HashMap.class);
+        }
 
 
-        for(ZCRMRecord zohoContact: (ArrayList<ZCRMRecord>) exchange.getProperty("createList", ArrayList.class)){
+
+        for(ZCRMRecord zohoContact: (ArrayList<ZCRMRecord>) exchange.getProperty("processList", ArrayList.class)){
             log.info("Contact Full Name: {}", zohoContact.getFieldValue("Full_Name"));
 
             //Build Mappings for ZOHO Contact to Salesforce Contact
 
             Contact newContact = new Contact();
+
+            if(update){
+                newContact.setId(contactMap.get((String) zohoContact.getFieldValue("Email")));
+            }
 
             //Job Info
             newContact.setDescription((String) zohoContact.getFieldValue("Description"));
@@ -86,6 +95,6 @@ public class PrepContactCreateProcessor implements Processor {
             newContacts.add(newContact);
         }
 
-        exchange.setProperty("createList", newContacts);
+        exchange.setProperty("processList", newContacts);
     }
 }

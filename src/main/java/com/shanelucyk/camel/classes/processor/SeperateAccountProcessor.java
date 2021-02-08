@@ -7,6 +7,9 @@ import org.apache.camel.Processor;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
@@ -18,7 +21,7 @@ public class SeperateAccountProcessor implements Processor {
         ArrayList<ZCRMRecord> accounts = exchange.getProperty("Accounts", ArrayList.class);
         ArrayList<ZCRMRecord> createList = new ArrayList<>();
         ArrayList<ZCRMRecord> updateList = new ArrayList<>();
-        ArrayList<String> accountNames = exchange.getProperty("accountNames", ArrayList.class);
+        ArrayList<String> accountNames = (ArrayList<String>) (exchange.getProperty("accountMap", HashMap.class).keySet().stream().collect(Collectors.toList()));
 
         for(ZCRMRecord account: accounts){
             String accountName = account.getFieldValue("Account_Name").toString();
