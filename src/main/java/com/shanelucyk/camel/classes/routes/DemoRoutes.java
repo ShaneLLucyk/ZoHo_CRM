@@ -8,6 +8,8 @@ import com.zoho.crm.library.crud.ZCRMModule;
 import com.zoho.crm.library.crud.ZCRMRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.salesforce.api.dto.SObjectField;
 import org.apache.camel.component.salesforce.api.utils.QueryHelper;
@@ -75,10 +77,43 @@ public class DemoRoutes extends RouteBuilder {
         camelContext.setStreamCaching(true);
 
 
+        onException()
+                .routeId("Default Error Handler")
+                .log("Default Error Handler: ${body}")
+                .redeliveryDelay(5000)
+                .maximumRedeliveries(3)
+                .retryAttemptedLogLevel(LoggingLevel.ERROR)
+                .backOffMultiplier(1)
+                .maximumRedeliveryDelay(120000)
+                .process(exchange -> {
+                    Exception e = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
+                    if( e != null){
+                        log.info("Global Exception Handler: {}", exchange.getException().getMessage());
+                        exchange.getIn().setBody(e.getMessage());
+                    }else{
+                        log.info("Global Exception Handler: No Exception in Exchange?");
+                        exchange.getIn().setBody("No Exception in Exchange?");
+                    }
+
+                })
+                .to("direct:sendSlackWarningMessage");
+
+
 //        from("quartz://myGroup/contactScheduler?cron=0+50+*+?+*+MON-FRI")
         from("quartz://myGroup/contactScheduler?trigger.repeatInterval=1&trigger.repeatCount=0&startDelayedSeconds=5")
                 .routeId("QuartzAccountSchedulerRoute").log("QuartsScheduler Triggered")
+                .process(exchange -> {
+                    throw new Exception("Force Failure");
+                })
+                .to("direct:AccountProcess")
+                .to("direct:PropertyCleanup")
+                .to("direct:ContactProcess")
+                .log("End of System Processing")
+                .setBody(simple("General Processing Successful. Accounts & Contacts Syncronized from Zoho to Salesforce"))
+                .to("direct:sendSlackGeneralMessage");
 
+
+        from("direct:AccountProcess").routeId("AccountProcessRoute")
                 // Accounts Processing
                 .process(retrieveZohoAccountProcessor)
                 .log("Zoho Accounts Retrieved")
@@ -95,15 +130,18 @@ public class DemoRoutes extends RouteBuilder {
                         .to("direct:updateAccounts")
                     .otherwise().log("No Accounts to Update")
                 .end()
-                .log("After Accounts Are Finished")
+                .log("After Accounts Are Finished");
 
+        from("direct:PropertyCleanup").routeId("PropertyCleanupRoute")
                 //Cleanup Properties before Contact Run
                 .removeProperty("accountNames")
                 .removeProperty("accountMap")
                 .removeProperty("createList")
                 .removeProperty("updateList")
                 .removeProperty("processList")
+                .log("After Property Cleanup");
 
+        from("direct:ContactProcess").routeId("ContactProcessgRoute")
                 //Contact Processing
                 .process(retrieveZohoContactsProcessor)
                 .log("Zoho Contacts Retrieved")
@@ -213,6 +251,27 @@ public class DemoRoutes extends RouteBuilder {
                 .setHeader("sObjectQuery", simple("SELECT Id, Email FROM Contact"))
                 .to("salesforce:query?sObjectQuery=&sObjectClass=" + QueryRecordsContact.class.getName())
                 .process(buildContactEmailIdMapProcessor);
+
+
+
+
+
+
+
+
+
+        from("direct:sendSlackGeneralMessage").routeId("SlackGeneralMessageRoute")
+                .log("Sending Message to Slack: General: ${body}")
+                .setBody(simple("General: ${body}"))
+                .to("slack:cameldemo");
+
+        from("direct:sendSlackWarningMessage").routeId("SlackWarningMessageRoute")
+                .log("Sending Message to Slack: Warning: ${body}")
+                .setBody(simple("Warning: ${body}"))
+                .to("slack:warning");
+
+
+
 //
 //        from("direct:queryById")
 //            .to("log:queryById?level=INFO&showBody=true&showHeaders=true&multiline=true")
