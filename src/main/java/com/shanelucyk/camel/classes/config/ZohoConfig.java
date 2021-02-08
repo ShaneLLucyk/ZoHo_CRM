@@ -1,8 +1,10 @@
 package com.shanelucyk.camel.classes.config;
 
+import com.shanelucyk.camel.classes.context.ZohoContext;
 import com.zoho.crm.library.setup.restclient.ZCRMRestClient;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -15,20 +17,24 @@ public class ZohoConfig {
 
     private ZCRMRestClient zohoClient = null;
 
+    @Autowired
+    ZohoContext zohoContext;
+
+
     @PostConstruct
     public void postConstruct() throws Exception {
         HashMap<String, String> zcrmConfigurations = new HashMap <String, String >();
-        zcrmConfigurations.put("minLogLevel", "ALL");
-        zcrmConfigurations.put("currentUserEmail","shane-lucyk@hotmail.com");
-        zcrmConfigurations.put("client_id","1000.TER7TUM7777SFIOA2FBHX2U486PTFE");
-        zcrmConfigurations.put("client_secret","57dcb39697fcd0ca73e8fa416d0dca47f90c503b04");
-        zcrmConfigurations.put("redirect_uri","https://crm.zoho.com");
-        zcrmConfigurations.put("persistence_handler_class","com.zoho.oauth.clientapp.ZohoOAuthFilePersistence");//for database. "com.zoho.oauth.clientapp.ZohoOAuthFilePersistence" for file, user can implement his own persistence and provide the path here
-        zcrmConfigurations.put("oauth_tokens_file_path","./src/main/resources/oauthtokens.properties");//optional
-        zcrmConfigurations.put("accessType","Development");//Production->www(default), Development->developer, Sandbox->sandbox(optional)
-        zcrmConfigurations.put("access_type","offline");//optional
-        zcrmConfigurations.put("apiBaseUrl","https://www.zohoapis.com");//optional
-        zcrmConfigurations.put("iamURL","https://accounts.zoho.com");//optional
+        zcrmConfigurations.put("minLogLevel", zohoContext.getMinLogLevel());
+        zcrmConfigurations.put("currentUserEmail",zohoContext.getCurrentUserEmail());
+        zcrmConfigurations.put("client_id",zohoContext.getClient_id());
+        zcrmConfigurations.put("client_secret",zohoContext.getClient_secret());
+        zcrmConfigurations.put("redirect_uri",zohoContext.getRedirect_uri());
+        zcrmConfigurations.put("persistence_handler_class",zohoContext.getPersistenceHandlerClass());//for database. "com.zoho.oauth.clientapp.ZohoOAuthFilePersistence" for file, user can implement his own persistence and provide the path here
+        zcrmConfigurations.put("oauth_tokens_file_path",zohoContext.getOauthTokensFilePath());//optional
+        zcrmConfigurations.put("accessType",zohoContext.getType());//Production->www(default), Development->developer, Sandbox->sandbox(optional)
+        zcrmConfigurations.put("access_type",zohoContext.getAccess_type());//optional
+        zcrmConfigurations.put("apiBaseUrl",zohoContext.getApiBaseUrl());//optional
+        zcrmConfigurations.put("iamURL",zohoContext.getIamURL());//optional
         ZCRMRestClient.initialize(zcrmConfigurations);//for initializing
         log.info("After Client Initialization");
 

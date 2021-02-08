@@ -2,8 +2,10 @@ package com.shanelucyk.camel.classes.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.shanelucyk.camel.classes.context.SlackContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.component.slack.SlackComponent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +24,10 @@ public class ApplicationConfig {
         log.info("AppConfig postConstruct");
     }
 
+
+    @Autowired
+    SlackContext slackContext;
+
     @Bean(name = "jsonObjectMapper")
     @Primary
     public ObjectMapper jsonObjectMapper() {
@@ -34,7 +40,8 @@ public class ApplicationConfig {
     @Primary
    public SlackComponent slackComponent(){
         SlackComponent component = new SlackComponent();
-        component.setWebhookUrl("https://hooks.slack.com/services/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");
+        String webHookUrl = slackContext.getBaseURL() + "/" + slackContext.getPATH();
+        component.setWebhookUrl(webHookUrl);
         return component;
     }
 }

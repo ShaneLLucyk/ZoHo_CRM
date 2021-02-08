@@ -651,6 +651,18 @@ public class Account extends AbstractDescribedSObjectBase {
         this.SLAExpirationDate__c = SLAExpirationDate__c;
     }
 
+    private String ZohoAccountID__c;
+
+    @JsonProperty("ZohoAccountID__c")
+    public String getZohoAccountID__c() {
+        return this.ZohoAccountID__c;
+    }
+
+    @JsonProperty("ZohoAccountID__c")
+    public void setZohoAccountID__c(String ZohoAccountID__c) {
+        this.ZohoAccountID__c = ZohoAccountID__c;
+    }
+
      private QueryRecordsAccount ChildAccounts;
 
     @JsonProperty("ChildAccounts")
@@ -912,6 +924,8 @@ public class Account extends AbstractDescribedSObjectBase {
         fields1.add(sObjectField62);
         final SObjectField sObjectField63 = createField("SLAExpirationDate__c", "SLA Expiration Date", "date", "xsd:date", 0, false, true, false, false, true, false, false);
         fields1.add(sObjectField63);
+        final SObjectField sObjectField64 = createField("ZohoAccountID__c", "ZohoAccountID", "string", "xsd:string", 100, true, true, false, false, true, false, false);
+        fields1.add(sObjectField64);
 
         description.setLabel("Account");
         description.setLabelPlural("Accounts");
@@ -926,9 +940,9 @@ public class Account extends AbstractDescribedSObjectBase {
         sObjectDescriptionUrls1.setQuickActions("/services/data/v34.0/sobjects/Account/quickActions");
         sObjectDescriptionUrls1.setRowTemplate("/services/data/v34.0/sobjects/Account/{ID}");
         sObjectDescriptionUrls1.setSobject("/services/data/v34.0/sobjects/Account");
-        sObjectDescriptionUrls1.setUiDetailTemplate("https://na172.salesforce.com/{ID}");
-        sObjectDescriptionUrls1.setUiEditTemplate("https://na172.salesforce.com/{ID}/e");
-        sObjectDescriptionUrls1.setUiNewRecord("https://na172.salesforce.com/001/e");
+        sObjectDescriptionUrls1.setUiDetailTemplate("https://shanelucykcompany-dev-ed.my.salesforce.com/{ID}");
+        sObjectDescriptionUrls1.setUiEditTemplate("https://shanelucykcompany-dev-ed.my.salesforce.com/{ID}/e");
+        sObjectDescriptionUrls1.setUiNewRecord("https://shanelucykcompany-dev-ed.my.salesforce.com/001/e");
         description.setUrls(sObjectDescriptionUrls1);
 
         return description;

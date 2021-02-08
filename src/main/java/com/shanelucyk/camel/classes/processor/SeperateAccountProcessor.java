@@ -18,19 +18,21 @@ public class SeperateAccountProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
+        log.info("Process: Seperate Accounts");
         ArrayList<ZCRMRecord> accounts = exchange.getProperty("Accounts", ArrayList.class);
         ArrayList<ZCRMRecord> createList = new ArrayList<>();
         ArrayList<ZCRMRecord> updateList = new ArrayList<>();
-        ArrayList<String> accountNames = (ArrayList<String>) (exchange.getProperty("accountMap", HashMap.class).keySet().stream().collect(Collectors.toList()));
+//        ArrayList<String> accountNames = (ArrayList<String>) (exchange.getProperty("accountMap", HashMap.class).keySet().stream().collect(Collectors.toList()));
+        ArrayList<String> zids = (ArrayList<String>) (exchange.getProperty("accountZMap", HashMap.class).keySet().stream().collect(Collectors.toList()));
 
         for(ZCRMRecord account: accounts){
-            String accountName = account.getFieldValue("Account_Name").toString();
-            log.info("Current AccountName: {}", accountName);
-            if(accountNames.contains(accountName)){
-                log.info("Account Exists Exists, Updating");
+            String accountZid = account.getEntityId().toString();
+            log.info("Current Zoho Account ID: {}", accountZid);
+            if(zids.contains(accountZid)){
+                log.info("Account Exists In Salesforce, Updating");
                 updateList.add(account);
             }else{
-                log.info("Account does not exist, Creating");
+                log.info("Account does not exist in Salesforce, Creating");
                 createList.add(account);
             }
         }

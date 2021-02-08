@@ -3,21 +3,18 @@
  */
 package org.apache.camel.salesforce.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Generated;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-
 import org.apache.camel.component.salesforce.api.PicklistEnumConverter;
 import org.apache.camel.component.salesforce.api.dto.AbstractDescribedSObjectBase;
 import org.apache.camel.component.salesforce.api.dto.SObjectDescription;
 import org.apache.camel.component.salesforce.api.dto.SObjectDescriptionUrls;
 import org.apache.camel.component.salesforce.api.dto.SObjectField;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Salesforce DTO for SObject Contact
@@ -588,6 +585,18 @@ public class Contact extends AbstractDescribedSObjectBase {
         this.Languages__c = Languages__c;
     }
 
+    private String ZohoContactID__c;
+
+    @JsonProperty("ZohoContactID__c")
+    public String getZohoContactID__c() {
+        return this.ZohoContactID__c;
+    }
+
+    @JsonProperty("ZohoContactID__c")
+    public void setZohoContactID__c(String ZohoContactID__c) {
+        this.ZohoContactID__c = ZohoContactID__c;
+    }
+
      private QueryRecordsAsset Assets;
 
     @JsonProperty("Assets")
@@ -817,6 +826,8 @@ public class Contact extends AbstractDescribedSObjectBase {
         fields1.add(sObjectField57);
         final SObjectField sObjectField58 = createField("Languages__c", "Languages", "string", "xsd:string", 100, false, true, false, false, true, false, false);
         fields1.add(sObjectField58);
+        final SObjectField sObjectField59 = createField("ZohoContactID__c", "ZohoContactID", "string", "xsd:string", 100, true, true, false, false, true, false, false);
+        fields1.add(sObjectField59);
 
         description.setLabel("Contact");
         description.setLabelPlural("Contacts");
@@ -831,9 +842,9 @@ public class Contact extends AbstractDescribedSObjectBase {
         sObjectDescriptionUrls1.setQuickActions("/services/data/v34.0/sobjects/Contact/quickActions");
         sObjectDescriptionUrls1.setRowTemplate("/services/data/v34.0/sobjects/Contact/{ID}");
         sObjectDescriptionUrls1.setSobject("/services/data/v34.0/sobjects/Contact");
-        sObjectDescriptionUrls1.setUiDetailTemplate("https://na172.salesforce.com/{ID}");
-        sObjectDescriptionUrls1.setUiEditTemplate("https://na172.salesforce.com/{ID}/e");
-        sObjectDescriptionUrls1.setUiNewRecord("https://na172.salesforce.com/003/e");
+        sObjectDescriptionUrls1.setUiDetailTemplate("https://shanelucykcompany-dev-ed.my.salesforce.com/{ID}");
+        sObjectDescriptionUrls1.setUiEditTemplate("https://shanelucykcompany-dev-ed.my.salesforce.com/{ID}/e");
+        sObjectDescriptionUrls1.setUiNewRecord("https://shanelucykcompany-dev-ed.my.salesforce.com/003/e");
         description.setUrls(sObjectDescriptionUrls1);
 
         return description;

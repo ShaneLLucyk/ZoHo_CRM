@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.apache.camel.component.salesforce.SalesforceEndpointConfig.*;
 
@@ -68,6 +70,12 @@ public class DemoRoutes extends RouteBuilder {
     @Autowired
     BuildContactEmailIdMapProcessor buildContactEmailIdMapProcessor;
 
+    @Autowired
+    BuildAccountZidIdMapProcessor buildAccountZidIdMapProcessor;
+
+    @Autowired
+    BuildContactZidIdMapProcessor buildContactZidIdMapProcessor;
+
     @Override
     public void configure() throws Exception {
         log.info("Starting RestRoutes");
@@ -88,11 +96,11 @@ public class DemoRoutes extends RouteBuilder {
                 .process(exchange -> {
                     Exception e = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
                     if( e != null){
-                        log.info("Global Exception Handler: {}", exchange.getException().getMessage());
-                        exchange.getIn().setBody(e.getMessage());
+                        log.info("Global Exception Handler: {}", e);
+                        exchange.getIn().setBody(e.getClass().getSimpleName() + ": " + e.getMessage());
                     }else{
                         log.info("Global Exception Handler: No Exception in Exchange?");
-                        exchange.getIn().setBody("No Exception in Exchange?");
+                        exchange.getIn().setBody("Exception handler hit but no exception found in exchange. This is not expected behaviour. See Log Messages.");
                     }
 
                 })
@@ -102,15 +110,19 @@ public class DemoRoutes extends RouteBuilder {
 //        from("quartz://myGroup/contactScheduler?cron=0+50+*+?+*+MON-FRI")
         from("quartz://myGroup/contactScheduler?trigger.repeatInterval=1&trigger.repeatCount=0&startDelayedSeconds=5")
                 .routeId("QuartzAccountSchedulerRoute").log("QuartsScheduler Triggered")
-                .process(exchange -> {
-                    throw new Exception("Force Failure");
-                })
+//                .process(exchange -> {
+//                    throw new Exception("Force Failure");
+//                })
                 .to("direct:AccountProcess")
                 .to("direct:PropertyCleanup")
                 .to("direct:ContactProcess")
-                .log("End of System Processing")
-                .setBody(simple("General Processing Successful. Accounts & Contacts Syncronized from Zoho to Salesforce"))
-                .to("direct:sendSlackGeneralMessage");
+                .choice()
+                .when(simple("${exchangeProperty.errors.size} != 0"))
+                    .to("direct:processIndividualErrors")
+                .otherwise().log("No Errors Found")
+                .end()
+                .log("End of System Processing");
+
 
 
         from("direct:AccountProcess").routeId("AccountProcessRoute")
@@ -118,6 +130,7 @@ public class DemoRoutes extends RouteBuilder {
                 .process(retrieveZohoAccountProcessor)
                 .log("Zoho Accounts Retrieved")
                 .to("direct:getAccountNameIdMap")
+                .to("direct:getAccountZIdIdMap")
                 .process(seperateAccountProcessor)
                 .choice()
                     .when(simple("${exchangeProperty.createList.size} != 0"))
@@ -130,24 +143,28 @@ public class DemoRoutes extends RouteBuilder {
                         .to("direct:updateAccounts")
                     .otherwise().log("No Accounts to Update")
                 .end()
+                .setBody(simple("General Processing Successful. Accounts Syncronized from Zoho to Salesforce. Creates: ${exchangeProperty.createList.size}"))
+                .to("direct:sendSlackGeneralMessage")
                 .log("After Accounts Are Finished");
 
         from("direct:PropertyCleanup").routeId("PropertyCleanupRoute")
                 //Cleanup Properties before Contact Run
                 .removeProperty("accountNames")
                 .removeProperty("accountMap")
+                .removeProperty("zipMap")
                 .removeProperty("createList")
                 .removeProperty("updateList")
                 .removeProperty("processList")
+                .setBody(simple(""))
                 .log("After Property Cleanup");
 
-        from("direct:ContactProcess").routeId("ContactProcessgRoute")
+        from("direct:ContactProcess").routeId("ContactProcessRoute")
                 //Contact Processing
                 .process(retrieveZohoContactsProcessor)
                 .log("Zoho Contacts Retrieved")
-                .to("direct:getSalesforceContactEmails")
-                .to("direct:getAccountNameIdMap")
-                .to("direct:getContactIdMap")
+                .to("direct:getAccountZIdIdMap")
+                .log("Before get CZidIDMap")
+                .to("direct:getContactZIdIdMap")
                 .process(seperateContactProcessor)
                 .choice()
                     .when(simple("${exchangeProperty.createList.size} != 0"))
@@ -162,6 +179,8 @@ public class DemoRoutes extends RouteBuilder {
                 .end()
                 .log("After Contact Creation");
 
+
+
         /*
         * Account Creation Logic
         * */
@@ -171,7 +190,6 @@ public class DemoRoutes extends RouteBuilder {
                 .setProperty("processList", simple("${exchangeProperty.createList}"))
                 .process(convertZohoAccountProcessor)
                 .loop(simple("${exchangeProperty.processList.size()}")).copy()
-                    .log("Index: ${exchangeProperty.CamelLoopIndex}")
                     .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
                     .to("salesforce:createSObject")
                 .end()
@@ -186,9 +204,7 @@ public class DemoRoutes extends RouteBuilder {
                 .setProperty("updateFlag", constant(true))
                 .process(convertZohoAccountProcessor)
                 .loop(simple("${exchangeProperty.processList.size()}")).copy()
-                    .log("Index: ${exchangeProperty.CamelLoopIndex}")
                     .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
-                    .log("Before to: ${body}")
                     .to("salesforce:upsertSObject?sObjectIdName=Id")
                 .end()
             .end();
@@ -203,9 +219,7 @@ public class DemoRoutes extends RouteBuilder {
                 .setProperty("processList", simple("${exchangeProperty.createList}"))
                 .process(convertZohoContactProcessor)
                 .loop(simple("${exchangeProperty.processList.size()}")).copy()
-                    .log("Index: ${exchangeProperty.CamelLoopIndex}")
                     .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
-                    .log("${body}")
                     .to("salesforce:createSObject")
                 .end()
             .end();
@@ -220,11 +234,14 @@ public class DemoRoutes extends RouteBuilder {
                 .setProperty("processList", simple("${exchangeProperty.updateList}"))
                 .process(convertZohoContactProcessor)
                 .loop(simple("${exchangeProperty.processList.size()}")).copy()
-                    .log("Index: ${exchangeProperty.CamelLoopIndex}")
                     .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
                     .to("salesforce:upsertSObject?sObjectIdName=Id")
                 .end()
             .end();
+
+
+
+
 
         //Query Functions
 
@@ -246,6 +263,13 @@ public class DemoRoutes extends RouteBuilder {
                 .to("salesforce:query?sObjectQuery=&sObjectClass=" + QueryRecordsAccount.class.getName())
                 .process(buildAccountNameIdMapProcessor);
 
+
+        //Get Name to ID Map for Accounts
+        from("direct:getAccountZIdIdMap")
+                .setHeader("sObjectQuery", simple("SELECT Id, ZohoAccountID__c FROM Account"))
+                .to("salesforce:query?sObjectQuery=&sObjectClass=" + QueryRecordsAccount.class.getName())
+                .process(buildAccountZidIdMapProcessor);
+
         //Get Email to ID Map for Contacts
         from("direct:getContactIdMap")
                 .setHeader("sObjectQuery", simple("SELECT Id, Email FROM Contact"))
@@ -253,10 +277,26 @@ public class DemoRoutes extends RouteBuilder {
                 .process(buildContactEmailIdMapProcessor);
 
 
+        //Get Name to ID Map for Accounts
+        from("direct:getContactZIdIdMap")
+                .setHeader("sObjectQuery", simple("SELECT ZohoContactID__C , Id from Contact"))
+                .to("salesforce:query?sObjectQuery=&sObjectClass=" + QueryRecordsContact.class.getName())
+                .process(buildContactZidIdMapProcessor);
 
 
-
-
+    //Slack And Error Handling
+        from("direct:processIndividualErrors").routeId("IndividualErrorHandlingRoute")
+                .process(exchange -> {
+                    String errorBody = "The Following Errors occured during regular processing:";
+                   HashMap<String, String> errors = exchange.getProperty("errorList", HashMap.class) ;
+                   assert (errors != null);
+                   for(Map.Entry<String, String> s: errors.entrySet()){
+                       errorBody += "\n" + "- Name=" + s.getKey() + ", " + s.getValue();
+                   }
+                   log.info("Error Body: {}", errorBody);
+                   exchange.getIn().setBody(errorBody);
+                })
+                .to("direct:sendSlackWarningMessage");
 
 
 

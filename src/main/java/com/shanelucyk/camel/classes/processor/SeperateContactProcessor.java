@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
@@ -17,15 +19,19 @@ public class SeperateContactProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
+        log.info("Process: Seperate Contacts");
+
         ArrayList<ZCRMRecord> contacts = exchange.getProperty("Contacts", ArrayList.class);
         ArrayList<ZCRMRecord> createList = new ArrayList<>();
         ArrayList<ZCRMRecord> updateList = new ArrayList<>();
-        ArrayList<String> emails = exchange.getProperty("SalesforceContactEmails", ArrayList.class);
+//        ArrayList<String> emails = exchange.getProperty("SalesforceContactEmails", ArrayList.class);
+        ArrayList<String> zids = (ArrayList<String>) (exchange.getProperty("contactZMap", HashMap.class).keySet().stream().collect(Collectors.toList()));
+
 
         for(ZCRMRecord contact: contacts){
-            String contactEmail = contact.getFieldValue("Email").toString();
-            log.info("Current User: {}", contactEmail);
-            if(emails.contains(contactEmail)){
+            String contactId = contact.getEntityId().toString();
+            log.info("Current User: {}", contactId);
+            if(zids.contains(contactId)){
                 log.info("User Exists, Updating");
                 updateList.add(contact);
             }else{

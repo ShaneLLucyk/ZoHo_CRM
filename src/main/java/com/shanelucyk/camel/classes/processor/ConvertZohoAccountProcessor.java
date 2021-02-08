@@ -20,62 +20,80 @@ public class ConvertZohoAccountProcessor implements Processor {
     public void process(Exchange exchange) throws Exception {
         log.info("Process: Starting Contact Transformation");
         ArrayList<Account> newAccounts = new ArrayList<>();
-        log.info("Converting ZOHO Account to Salesforce");
         boolean update = exchange.getProperty("updateFlag", Boolean.class);
         HashMap<String, String> accountMap = null;
         if(update){
-            accountMap = (exchange.getProperty("accountMap", HashMap.class));
+            accountMap = (exchange.getProperty("accountZMap", HashMap.class));
         }
+
+        //Error Handling Map
+        HashMap<String, String> errors = exchange.getProperty("errorMap", HashMap.class);
+        if(errors == null)
+            errors = new HashMap<>();
+
+        //Assertions
+        assert(accountMap != null);
+        assert(errors != null);
+
 
         for(ZCRMRecord zohoAccount: (ArrayList<ZCRMRecord>) exchange.getProperty("processList", ArrayList.class)){
-            //Build Mappings for ZOHO Account to Salesforce Account
-            Account newAccount = new Account();
+            try{
+                log.debug("Contact Full Name: {}", (String) zohoAccount.getFieldValue("Account_Name"));
 
-            if(update){
-                newAccount.setId(accountMap.get((String) zohoAccount.getFieldValue("Account_Name")));
+                //Build Mappings for ZOHO Account to Salesforce Account
+                Account newAccount = new Account();
+
+                if(update){
+                    newAccount.setId(accountMap.get(zohoAccount.getEntityId().toString()));
+                }
+                newAccount.setZohoAccountID__c(zohoAccount.getEntityId().toString());
+                newAccount.setName((String) zohoAccount.getFieldValue("Account_Name"));
+                newAccount.setDescription((String) zohoAccount.getFieldValue("Description"));
+                newAccount.setPhone((String) zohoAccount.getFieldValue("Phone"));
+                newAccount.setFax((String) zohoAccount.getFieldValue("Fax"));
+                newAccount.setWebsite((String) zohoAccount.getFieldValue("Website"));
+                newAccount.setTickerSymbol((String) zohoAccount.getFieldValue("Ticker_Symbol"));
+                newAccount.setSic((String) zohoAccount.getFieldValue("SIC_Code"));
+                newAccount.setAccountNumber((String) zohoAccount.getFieldValue("Account_Number"));
+                newAccount.setSite((String) zohoAccount.getFieldValue("Account_Site"));
+                newAccount.setNumberOfEmployees((int) zohoAccount.getFieldValue("Employees"));
+                newAccount.setAnnualRevenue((double) (int) zohoAccount.getFieldValue("Annual_Revenue"));
+
+
+
+                newAccount.setBillingStreet((String) zohoAccount.getFieldValue("Billing_Street"));
+                newAccount.setBillingCity((String) zohoAccount.getFieldValue("Billing_City"));
+                newAccount.setBillingState((String) zohoAccount.getFieldValue("Billing_State"));
+                newAccount.setBillingCountry((String) zohoAccount.getFieldValue("Billing_Country"));
+
+
+                newAccount.setShippingStreet((String) zohoAccount.getFieldValue("Shipping_Street"));
+                newAccount.setShippingCity((String) zohoAccount.getFieldValue("Shipping_City"));
+                newAccount.setShippingState((String) zohoAccount.getFieldValue("Shipping_State"));
+                newAccount.setShippingCountry((String) zohoAccount.getFieldValue("Shipping_Country"));
+
+                //Picklists:
+                //Account Type
+                String zohoType = (String) zohoAccount.getFieldValue("Account_Type");
+                populateType(zohoType, newAccount);
+
+                //Industry
+                String zohoIndustry = (String) zohoAccount.getFieldValue("Industry");
+                populateIndustry(zohoIndustry, newAccount);
+
+                //Ownership
+                String zohoOwnership = (String) zohoAccount.getFieldValue("Ownership");
+                populateOwnership(zohoOwnership, newAccount);
+
+
+
+                newAccounts.add(newAccount);
+            }catch (Exception e){
+                errors.put((String) zohoAccount.getFieldValue("Account_Name"), "Type=Account, Error=" + e.getClass().getSimpleName() + ": " + e.getMessage());
             }
-
-            newAccount.setName((String) zohoAccount.getFieldValue("Account_Name"));
-            newAccount.setDescription((String) zohoAccount.getFieldValue("Description"));
-            newAccount.setPhone((String) zohoAccount.getFieldValue("Phone"));
-            newAccount.setFax((String) zohoAccount.getFieldValue("Fax"));
-            newAccount.setWebsite((String) zohoAccount.getFieldValue("Website"));
-            newAccount.setTickerSymbol((String) zohoAccount.getFieldValue("Ticker_Symbol"));
-            newAccount.setSic((String) zohoAccount.getFieldValue("SIC_Code"));
-            newAccount.setAccountNumber((String) zohoAccount.getFieldValue("Account_Number"));
-            newAccount.setSite((String) zohoAccount.getFieldValue("Account_Site"));
-            newAccount.setNumberOfEmployees((int) zohoAccount.getFieldValue("Employees"));
-            newAccount.setAnnualRevenue((double) (int) zohoAccount.getFieldValue("Annual_Revenue"));
-
-
-
-            newAccount.setBillingStreet((String) zohoAccount.getFieldValue("Billing_Street"));
-            newAccount.setBillingCity((String) zohoAccount.getFieldValue("Billing_City"));
-            newAccount.setBillingState((String) zohoAccount.getFieldValue("Billing_State"));
-            newAccount.setBillingCountry((String) zohoAccount.getFieldValue("Billing_Country"));
-
-
-            newAccount.setShippingStreet((String) zohoAccount.getFieldValue("Shipping_Street"));
-            newAccount.setShippingCity((String) zohoAccount.getFieldValue("Shipping_City"));
-            newAccount.setShippingState((String) zohoAccount.getFieldValue("Shipping_State"));
-            newAccount.setShippingCountry((String) zohoAccount.getFieldValue("Shipping_Country"));
-
-            //Picklists:
-            //Account Type
-            String zohoType = (String) zohoAccount.getFieldValue("Account_Type");
-            populateType(zohoType, newAccount);
-
-            //Industry
-            String zohoIndustry = (String) zohoAccount.getFieldValue("Industry");
-            populateIndustry(zohoIndustry, newAccount);
-
-            //Ownership
-            String zohoOwnership = (String) zohoAccount.getFieldValue("Ownership");
-            populateOwnership(zohoOwnership, newAccount);
-
-            newAccounts.add(newAccount);
         }
-
+        log.debug("SizeOf Errors: {}, Size of Process List: {}", errors.size(), newAccounts.size());
+        exchange.setProperty("errorList", errors);
         exchange.setProperty("processList", newAccounts);
     }
 
