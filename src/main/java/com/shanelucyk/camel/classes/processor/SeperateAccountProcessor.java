@@ -27,18 +27,18 @@ public class SeperateAccountProcessor implements Processor {
 
         for(ZCRMRecord account: accounts){
             String accountZid = account.getEntityId().toString();
-            log.info("Current Zoho Account ID: {}", accountZid);
+            log.debug("Current Zoho Account ID: {}", accountZid);
             if(zids.contains(accountZid)){
-                log.info("Account Exists In Salesforce, Updating");
+                log.debug("Account Exists In Salesforce, Updating");
                 updateList.add(account);
             }else{
-                log.info("Account does not exist in Salesforce, Creating");
+                log.debug("Account does not exist in Salesforce, Creating");
                 createList.add(account);
             }
         }
 
         exchange.setProperty("createList", createList);
         exchange.setProperty("updateList", updateList);
-        log.info("Create Size: {}, Update Size: {}", createList.size(), updateList.size());
+        log.info("Account Create Size: {}, Update Size: {}", createList.size(), updateList.size());
     }
 }

@@ -30,17 +30,18 @@ public class SeperateContactProcessor implements Processor {
 
         for(ZCRMRecord contact: contacts){
             String contactId = contact.getEntityId().toString();
-            log.info("Current User: {}", contactId);
+            log.info("Current Contact: {}", contactId);
             if(zids.contains(contactId)){
-                log.info("User Exists, Updating");
+                log.debug("Contact Exists, Updating");
                 updateList.add(contact);
             }else{
-                log.info("User does not exist, Creating");
+                log.debug("Contact does not exist, Creating");
                 createList.add(contact);
             }
         }
 
         exchange.setProperty("createList", createList);
         exchange.setProperty("updateList", updateList);
+        log.info("Contact Create Size: {}, Update Size: {}", createList.size(), updateList.size());
     }
 }

@@ -3,21 +3,18 @@
  */
 package org.apache.camel.salesforce.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Generated;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-
 import org.apache.camel.component.salesforce.api.PicklistEnumConverter;
 import org.apache.camel.component.salesforce.api.dto.AbstractDescribedSObjectBase;
 import org.apache.camel.component.salesforce.api.dto.SObjectDescription;
 import org.apache.camel.component.salesforce.api.dto.SObjectDescriptionUrls;
 import org.apache.camel.component.salesforce.api.dto.SObjectField;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Salesforce DTO for SObject Opportunity
@@ -362,6 +359,18 @@ public class Opportunity extends AbstractDescribedSObjectBase {
         this.MainCompetitors__c = MainCompetitors__c;
     }
 
+    private String ZohoOpportunityID__c;
+
+    @JsonProperty("ZohoOpportunityID__c")
+    public String getZohoOpportunityID__c() {
+        return this.ZohoOpportunityID__c;
+    }
+
+    @JsonProperty("ZohoOpportunityID__c")
+    public void setZohoOpportunityID__c(String ZohoOpportunityID__c) {
+        this.ZohoOpportunityID__c = ZohoOpportunityID__c;
+    }
+
      private QueryRecordsEvent Events;
 
     @JsonProperty("Events")
@@ -498,6 +507,8 @@ public class Opportunity extends AbstractDescribedSObjectBase {
         fields1.add(sObjectField38);
         final SObjectField sObjectField39 = createField("MainCompetitors__c", "Main Competitor(s)", "string", "xsd:string", 100, false, true, false, false, true, false, false);
         fields1.add(sObjectField39);
+        final SObjectField sObjectField40 = createField("ZohoOpportunityID__c", "ZohoOpportunityID", "string", "xsd:string", 100, true, true, false, false, true, false, false);
+        fields1.add(sObjectField40);
 
         description.setLabel("Opportunity");
         description.setLabelPlural("Opportunities");
@@ -512,9 +523,9 @@ public class Opportunity extends AbstractDescribedSObjectBase {
         sObjectDescriptionUrls1.setQuickActions("/services/data/v34.0/sobjects/Opportunity/quickActions");
         sObjectDescriptionUrls1.setRowTemplate("/services/data/v34.0/sobjects/Opportunity/{ID}");
         sObjectDescriptionUrls1.setSobject("/services/data/v34.0/sobjects/Opportunity");
-        sObjectDescriptionUrls1.setUiDetailTemplate("https://na172.salesforce.com/{ID}");
-        sObjectDescriptionUrls1.setUiEditTemplate("https://na172.salesforce.com/{ID}/e");
-        sObjectDescriptionUrls1.setUiNewRecord("https://na172.salesforce.com/006/e");
+        sObjectDescriptionUrls1.setUiDetailTemplate("https://shanelucykcompany-dev-ed.my.salesforce.com/{ID}");
+        sObjectDescriptionUrls1.setUiEditTemplate("https://shanelucykcompany-dev-ed.my.salesforce.com/{ID}/e");
+        sObjectDescriptionUrls1.setUiNewRecord("https://shanelucykcompany-dev-ed.my.salesforce.com/006/e");
         description.setUrls(sObjectDescriptionUrls1);
 
         return description;

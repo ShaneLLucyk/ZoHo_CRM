@@ -33,7 +33,7 @@ public class ConvertZohoContactProcessor implements Processor {
             contactMap = exchange.getProperty("contactZMap", HashMap.class);
         }
 
-        HashMap<String, String> errors = exchange.getProperty("errorMap", HashMap.class);
+        HashMap<String, String> errors = exchange.getProperty("errorList", HashMap.class);
         if(errors == null)
             errors = new HashMap<>();
 
@@ -47,10 +47,6 @@ public class ConvertZohoContactProcessor implements Processor {
         for(ZCRMRecord zohoContact: (ArrayList<ZCRMRecord>) exchange.getProperty("processList", ArrayList.class)){
             try{
                 log.debug("Contact Full Name: {}", zohoContact.getFieldValue("Full_Name"));
-
-                if(zohoContact.getFieldValue("Full_Name").toString().equalsIgnoreCase("Simon Morasca (Sample)")){
-                    throw new Exception("Failed to Process Simon");
-                }
 
                 //Build Mappings for ZOHO Contact to Salesforce Contact
 

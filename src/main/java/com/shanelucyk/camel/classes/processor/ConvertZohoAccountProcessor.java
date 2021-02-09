@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 @Slf4j
 @Configuration
@@ -18,7 +19,7 @@ public class ConvertZohoAccountProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        log.info("Process: Starting Contact Transformation");
+        log.info("Process: Starting Account Transformation");
         ArrayList<Account> newAccounts = new ArrayList<>();
         boolean update = exchange.getProperty("updateFlag", Boolean.class);
         HashMap<String, String> accountMap = null;
@@ -27,7 +28,7 @@ public class ConvertZohoAccountProcessor implements Processor {
         }
 
         //Error Handling Map
-        HashMap<String, String> errors = exchange.getProperty("errorMap", HashMap.class);
+        HashMap<String, String> errors = exchange.getProperty("errorList", HashMap.class);
         if(errors == null)
             errors = new HashMap<>();
 
