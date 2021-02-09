@@ -1,19 +1,18 @@
 package com.shanelucyk.camel.classes.routes;
 
-import com.shanelucyk.camel.classes.context.SalesforceContext;
 import com.shanelucyk.camel.classes.processor.*;
-import com.shanelucyk.camel.classes.config.ZohoConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.salesforce.dto.QueryRecordsAccount;
-import org.apache.camel.salesforce.dto.QueryRecordsContact;
-import org.apache.camel.salesforce.dto.QueryRecordsOpportunity;
+import org.apache.camel.component.salesforce.api.SalesforceException;
+import org.apache.camel.component.salesforce.api.dto.RestError;
+import org.apache.camel.salesforce.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,13 +20,6 @@ import java.util.Map;
 @Component("demoRoutes")
 @Slf4j
 public class DemoRoutes extends RouteBuilder {
-//
-//    @Autowired
-//    SalesforceContext salesforceContext;
-//
-//    @Autowired
-//    ZohoConfig zohoConfig;
-
 
     //ZOHO Retrieval Processors
     @Autowired
@@ -72,6 +64,11 @@ public class DemoRoutes extends RouteBuilder {
     @Autowired
     BuildOpportunityZidIdMapProcessor buildOpportunityZidIdMapProcessor;
 
+
+    //Routing Exception Handler
+    @Autowired
+    RoutingExceptionProcessor routingExceptionProcessor;
+
     @Override
     public void configure() throws Exception {
         log.info("Starting RestRoutes");
@@ -79,7 +76,6 @@ public class DemoRoutes extends RouteBuilder {
         camelContext.setUseMDCLogging(true);
         camelContext.setUseBreadcrumb(true);
         camelContext.setStreamCaching(true);
-
 
         onException()
                 .routeId("Default Error Handler")
@@ -98,19 +94,23 @@ public class DemoRoutes extends RouteBuilder {
                         log.error("Global Exception Handler: No Exception in Exchange?");
                         exchange.getIn().setBody("Exception handler hit but no exception found in exchange. This is not expected behaviour. See Log Messages.");
                     }
-
                 })
                 .to("direct:sendSlackWarningMessage");
+
+
+
 
 
 //        from("quartz://myGroup/contactScheduler?cron=0+50+*+?+*+MON-FRI")
         from("quartz://myGroup/contactScheduler?trigger.repeatInterval=1&trigger.repeatCount=0&startDelayedSeconds=5")
                 .routeId("QuartzAccountSchedulerRoute").log("QuartsScheduler Triggered")
+
                 .to("direct:AccountProcess")
                 .to("direct:PropertyCleanup")
                 .to("direct:ContactProcess")
                 .to("direct:PropertyCleanup")
                 .to("direct:OpportunityProcess")
+
 
                 .choice()
                     .when(simple("${exchangeProperty.errorList.size} != 0"))
@@ -123,6 +123,7 @@ public class DemoRoutes extends RouteBuilder {
 
         from("direct:AccountProcess").routeId("AccountProcessRoute")
                 // Accounts Processing
+                .setProperty("runType", simple("ACCOUNT"))
                 .process(retrieveZohoAccountProcessor)
                 .log("Zoho Accounts Retrieved")
                 .to("direct:getAccountZIdIdMap")
@@ -145,6 +146,7 @@ public class DemoRoutes extends RouteBuilder {
 
         from("direct:ContactProcess").routeId("ContactProcessRoute")
                 //Contact Processing
+                .setProperty("runType", simple("CONTACT"))
                 .process(retrieveZohoContactsProcessor)
                 .log("Zoho Contacts Retrieved")
                 .to("direct:getAccountZIdIdMap")
@@ -164,7 +166,8 @@ public class DemoRoutes extends RouteBuilder {
                 .log("After Contact Creation");
 
         from("direct:OpportunityProcess").routeId("OpportunityProcessRoute")
-                .log("Processing Opportunities")
+                //Opportunity Processing
+                .setProperty("runType", simple("OPPORTUNITY"))
                 .process(retrieveZohoOpportunitiesProcessor)
                 .log("${exchangeProperty.Opportunities.size}")
                 .to("direct:getOpportunityZidMap")
@@ -196,7 +199,7 @@ public class DemoRoutes extends RouteBuilder {
                 .process(convertZohoAccountProcessor)
                 .loop(simple("${exchangeProperty.processList.size()}")).copy()
                     .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
-                    .to("salesforce:createSObject")
+                    .to("direct:salesforceCreate")
                 .end()
             .end();
 
@@ -207,7 +210,7 @@ public class DemoRoutes extends RouteBuilder {
                 .process(convertZohoAccountProcessor)
                 .loop(simple("${exchangeProperty.processList.size()}")).copy()
                     .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
-                    .to("salesforce:upsertSObject?sObjectIdName=Id")
+                    .to("direct:salesforceUpdate")
                 .end()
             .end();
 
@@ -222,7 +225,7 @@ public class DemoRoutes extends RouteBuilder {
                 .process(convertZohoContactProcessor)
                 .loop(simple("${exchangeProperty.processList.size()}")).copy()
                     .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
-                    .to("salesforce:createSObject")
+                    .to("direct:salesforceCreate")
                 .end()
             .end();
 
@@ -233,9 +236,10 @@ public class DemoRoutes extends RouteBuilder {
                 .process(convertZohoContactProcessor)
                 .loop(simple("${exchangeProperty.processList.size()}")).copy()
                     .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
-                    .to("salesforce:upsertSObject?sObjectIdName=Id")
+                    .to("direct:salesforceUpdate")
                 .end()
             .end();
+
 
         //################################################################################
         //###################### Opportunity Logic #######################################
@@ -247,7 +251,7 @@ public class DemoRoutes extends RouteBuilder {
                 .process(convertZohoOpportunityProcessor)
                 .loop(simple("${exchangeProperty.processList.size()}")).copy()
                     .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
-                    .to("salesforce:createSObject")
+                    .to("direct:salesforceCreate")
                 .end()
             .end();
 
@@ -258,11 +262,32 @@ public class DemoRoutes extends RouteBuilder {
                 .process(convertZohoOpportunityProcessor)
                 .loop(simple("${exchangeProperty.processList.size()}")).copy()
                     .setBody(simple("${exchangeProperty.processList[${exchangeProperty.CamelLoopIndex}]}"))
-                    .to("salesforce:upsertSObject?sObjectIdName=Id")
-                    .end()
+                    .to("direct:salesforceUpdate")
+                .end()
+            .end();
+
+
+
+        //################################################################################
+        //###################### Salesforce Builders #####################################
+        //################################################################################
+        from("direct:salesforceCreate").routeId("SalesforceCreateRoute")
+                .doTry()
+                    .to("salesforce:createSObject")
+                .doCatch(Exception.class)
+                    .log("Catching Salesforce Create Exception")
+                    .setProperty("routingErrorType", simple("CREATE"))
+                    .process(routingExceptionProcessor)
                 .end();
 
-
+        from("direct:salesforceUpdate").routeId("SalesforceUpdateRoute")
+                .doTry()
+                    .to("salesforce:upsertSObject?sObjectIdName=Id")
+                .doCatch(Exception.class)
+                    .log("Catching Salesforce Update Exception")
+                    .setProperty("routingErrorType", simple("UPDATE"))
+                    .process(routingExceptionProcessor)
+                .end();
 
 
 
@@ -310,10 +335,12 @@ public class DemoRoutes extends RouteBuilder {
         from("direct:processIndividualErrors").routeId("IndividualErrorHandlingRoute")
                 .process(exchange -> {
                     String errorBody = "The Following Errors occured during regular processing:";
-                   HashMap<String, String> errors = exchange.getProperty("errorList", HashMap.class) ;
+                    ArrayList<String> errors = exchange.getProperty("errorList", ArrayList.class) ;
                    assert (errors != null);
-                   for(Map.Entry<String, String> s: errors.entrySet()){
-                       errorBody += "\n" + "- Name=" + s.getKey() + ", " + s.getValue();
+
+                   for(String e: errors){
+                       errorBody += "\n" + "- Name=" +e.split("_")[0] + ", " + e.split("_")[1];
+
                    }
                    log.info("Error Body: {}", errorBody);
                    exchange.getIn().setBody(errorBody);
@@ -329,25 +356,5 @@ public class DemoRoutes extends RouteBuilder {
                 .log("Sending Message to Slack: Warning: ${body}")
                 .setBody(simple("Warning: ${body}"))
                 .to("slack:warning");
-
-
-
-//
-//        from("direct:queryById")
-//            .to("log:queryById?level=INFO&showBody=true&showHeaders=true&multiline=true")
-//            .toD("salesforce:getSObject" +
-//                    "?" + FORMAT + "=" + salesforceContext.getSalesforceResponseFormat() +
-//                    "&" + SOBJECT_CLASS  + "=${header."+SOBJECT_CLASS+"}" +
-//                    "&" + SOBJECT_NAME   + "=${header."+SOBJECT_NAME+"}" +
-//                    "&" + SOBJECT_FIELDS + "=${header."+SOBJECT_FIELDS+"}"
-//            );
-//
-//        from("direct:getWithId")
-//            .to("log:getWithId?level=INFO&showBody=true&showHeaders=true&multiline=true")
-//            .toD("salesforce:getSObjectWithId" +
-//                    "?" + FORMAT + "=" + salesforceContext.getSalesforceResponseFormat() +
-//                    "&" + SOBJECT_NAME + "=${header."+SOBJECT_NAME+"}" +
-//                    "&" + SOBJECT_EXT_ID_NAME + "=${header."+SOBJECT_EXT_ID_NAME+"}"
-//            );
     }
 }

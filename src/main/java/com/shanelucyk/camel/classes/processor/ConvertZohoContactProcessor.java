@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.SimpleFormatter;
 
 @Slf4j
@@ -33,9 +35,9 @@ public class ConvertZohoContactProcessor implements Processor {
             contactMap = exchange.getProperty("contactZMap", HashMap.class);
         }
 
-        HashMap<String, String> errors = exchange.getProperty("errorList", HashMap.class);
+        ArrayList<String> errors = exchange.getProperty("errorList", ArrayList.class);
         if(errors == null)
-            errors = new HashMap<>();
+            errors = new ArrayList<>();
 
 
         //Assertions:
@@ -51,6 +53,10 @@ public class ConvertZohoContactProcessor implements Processor {
                 //Build Mappings for ZOHO Contact to Salesforce Contact
 
                 Contact newContact = new Contact();
+
+
+                newContact.setFieldsToNull(generateNullSet());
+
                 newContact.setZohoContactID__c(zohoContact.getEntityId().toString());
 
 
@@ -67,8 +73,8 @@ public class ConvertZohoContactProcessor implements Processor {
                     log.warn("No Account found for Contact: {}", zohoContact.getFieldValue("Full_Name"));
                 }else{
                     String accountID = ((ZCRMRecord) zohoContact.getFieldValue("Account_Name")).getEntityId().toString();
-                    log.info("Zoho Account ID for this contact: {}", accountID);
-                    log.info("Salesforce Account ID for this Contact: {}", accountMap.get(accountID));
+                    log.debug("Zoho Account ID for this contact: {}", accountID);
+                    log.debug("Salesforce Account ID for this Contact: {}", accountMap.get(accountID));
                     newContact.setAccountId(accountMap.get(accountID));
                 }
 
@@ -110,12 +116,50 @@ public class ConvertZohoContactProcessor implements Processor {
 
                 newContacts.add(newContact);
             }catch (Exception e){
-                errors.put((String) zohoContact.getFieldValue("Full_Name"), "Type=Contact, Error=" + e.getClass().getSimpleName() + ": " + e.getMessage());
+                errors.add((String) zohoContact.getFieldValue("Full_Name") + "_" + "Type=Contact, Error=" + e.getClass().getSimpleName() + ": " + e.getMessage());
             }
-
         }
         log.info("SizeOf Errors: {}, Size of Process List: {}", errors.size(), newContacts.size());
         exchange.setProperty("errorList", errors);
         exchange.setProperty("processList", newContacts);
     }
+
+    public Set generateNullSet(){
+        Set<String> s = new HashSet();
+        s.add("AccountId");
+
+        s.add("Description");
+        s.add("Title");
+        s.add("AssistantName");
+        s.add("Department");
+
+        s.add("LastName");
+        s.add("FirstName");
+        s.add("Email");
+        s.add("Salutation");
+        s.add("Birthdate");
+
+//        s.add("MailingAddress");
+        s.add("MailingStreet");
+        s.add("MailingCity");
+        s.add("MailingState");
+        s.add("MailingCountry");
+        s.add("MailingPostalCode");
+
+        s.add("OtherStreet");
+        s.add("OtherCity");
+        s.add("OtherState");
+        s.add("OtherCountry");
+        s.add("OtherPostalCode");
+
+        s.add("HomePhone");
+        s.add("Fax");
+        s.add("Phone");
+        s.add("OtherPhone");
+        s.add("MobilePhone");
+
+        return s;
+    }
+
+
 }
