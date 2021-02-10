@@ -3,9 +3,11 @@ package com.shanelucyk.camel.classes.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.shanelucyk.camel.classes.context.SlackContext;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.component.slack.SlackComponent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +30,11 @@ public class ApplicationConfig {
     @Autowired
     SlackContext slackContext;
 
+    @Getter
+    @Value("${cron.schedule}")
+    String cronSchedule;
+
+
     @Bean(name = "jsonObjectMapper")
     @Primary
     public ObjectMapper jsonObjectMapper() {
@@ -38,7 +45,7 @@ public class ApplicationConfig {
 
     @Bean(name="slack")
     @Primary
-   public SlackComponent slackComponent(){
+    public SlackComponent slackComponent(){
         SlackComponent component = new SlackComponent();
         String webHookUrl = slackContext.getBaseURL() + "/" + slackContext.getPATH();
         component.setWebhookUrl(webHookUrl);

@@ -5,13 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Configuration
+@Component
 public class SeperateOpportunityProcessor implements Processor {
 
 
@@ -37,6 +38,7 @@ public class SeperateOpportunityProcessor implements Processor {
 
         exchange.setProperty("createList", createList);
         exchange.setProperty("updateList", updateList);
+        exchange.setProperty("oppSuccessList", new ArrayList<>());
         log.debug("Opportunity Create Size: {}, Update Size: {}", createList.size(), updateList.size());
     }
 }

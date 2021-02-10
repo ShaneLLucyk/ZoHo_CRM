@@ -9,11 +9,12 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
 @Slf4j
-@Configuration
+@Component
 public class RetrieveZohoContactsProcessor implements Processor {
     @Autowired
     ZohoConfig zohoConfig;
@@ -23,10 +24,10 @@ public class RetrieveZohoContactsProcessor implements Processor {
 
         log.info("Retrieving Accounts from Zoho");
         ZCRMModule mod = zohoConfig.getZohoClient().getModuleInstance("contacts");
-        log.info("After Module Retrieval");
+        log.debug("After Module Retrieval");
         BulkAPIResponse records = mod.getRecords();
-        log.info("After Contact Records Retrieval");
-        log.info(records.getResponseJSON().toString());
+        log.debug("After Contact Records Retrieval");
+        log.info("{} contacts retrieved", records.getData().size());
         ArrayList<ZCRMRecord> contacts = (ArrayList<ZCRMRecord>) records.getData();
         exchange.setProperty("Contacts", contacts);
     }

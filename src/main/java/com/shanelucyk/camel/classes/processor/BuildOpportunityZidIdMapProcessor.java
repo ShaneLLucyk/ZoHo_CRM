@@ -9,11 +9,12 @@ import org.apache.camel.salesforce.dto.Opportunity;
 import org.apache.camel.salesforce.dto.QueryRecordsContact;
 import org.apache.camel.salesforce.dto.QueryRecordsOpportunity;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
 @Slf4j
-@Configuration
+@Component
 public class BuildOpportunityZidIdMapProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {

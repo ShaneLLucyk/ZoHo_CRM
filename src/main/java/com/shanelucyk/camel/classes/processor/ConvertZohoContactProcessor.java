@@ -10,6 +10,7 @@ import org.apache.camel.salesforce.dto.Contact;
 import org.apache.camel.salesforce.dto.Contact_SalutationEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.Set;
 import java.util.logging.SimpleFormatter;
 
 @Slf4j
-@Configuration
+@Component
 public class ConvertZohoContactProcessor implements Processor {
 
 
@@ -69,13 +70,19 @@ public class ConvertZohoContactProcessor implements Processor {
                 newContact.setAssistantName((String) zohoContact.getFieldValue("Assistant"));
                 newContact.setDepartment((String) zohoContact.getFieldValue("Department"));
 
+
+
                 if(((ZCRMRecord) zohoContact.getFieldValue("Account_Name")) == null){
                     log.warn("No Account found for Contact: {}", zohoContact.getFieldValue("Full_Name"));
                 }else{
                     String accountID = ((ZCRMRecord) zohoContact.getFieldValue("Account_Name")).getEntityId().toString();
                     log.debug("Zoho Account ID for this contact: {}", accountID);
                     log.debug("Salesforce Account ID for this Contact: {}", accountMap.get(accountID));
-                    newContact.setAccountId(accountMap.get(accountID));
+                    if(accountMap.get(accountID) == null){
+                        log.warn("No Salesforce Account matches the zoho account. Check for Account Creation Failures");
+                    }else{
+                        newContact.setAccountId(accountMap.get(accountID));
+                    }
                 }
 
                 //Personal Info
@@ -90,6 +97,7 @@ public class ConvertZohoContactProcessor implements Processor {
                 }
                 if((String)zohoContact.getFieldValue("Date_of_Birth") != null){
                     LocalDate bday = LocalDate.parse((String) zohoContact.getFieldValue("Date_of_Birth"));
+//                    LocalDate bday = LocalDate.parse("nully");
                     newContact.setBirthdate(bday);
                 }
 

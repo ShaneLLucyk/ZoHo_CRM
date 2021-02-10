@@ -7,11 +7,12 @@ import org.apache.camel.Processor;
 import org.apache.camel.salesforce.dto.Account;
 import org.apache.camel.salesforce.dto.QueryRecordsAccount;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
 @Slf4j
-@Configuration
+@Component
 public class BuildAccountZidIdMapProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -21,7 +22,7 @@ public class BuildAccountZidIdMapProcessor implements Processor {
         for(Account a: accounts.getRecords()){
             if(a.getZohoAccountID__c() == null)
 
-                log.info("Adding {}:{} to zidMap", a.getZohoAccountID__c(), a.getId());
+                log.debug("Adding {}:{} to zidMap", a.getZohoAccountID__c(), a.getId());
             accountMap.put(a.getZohoAccountID__c(), a.getId());
         }
         exchange.setProperty("accountZMap", accountMap);

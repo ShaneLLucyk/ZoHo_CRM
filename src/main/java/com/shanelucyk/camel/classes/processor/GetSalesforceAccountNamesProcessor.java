@@ -10,12 +10,13 @@ import org.apache.camel.salesforce.dto.QueryRecordsAccount;
 import org.apache.camel.salesforce.dto.QueryRecordsContact;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 @Slf4j
-@Configuration
+@Component
 public class GetSalesforceAccountNamesProcessor implements Processor {
     @Autowired
     ZohoConfig zohoConfig;
@@ -26,7 +27,7 @@ public class GetSalesforceAccountNamesProcessor implements Processor {
         QueryRecordsAccount accounts = exchange.getIn().getBody(QueryRecordsAccount.class);
         ArrayList<String> accountNames = new ArrayList();
         for(Account a: accounts.getRecords()){
-            log.info("Adding {}:{}", a.getName(), a.getId());
+            log.debug("Adding {}:{}", a.getName(), a.getId());
             accountNames.add(a.getName());
         }
         exchange.setProperty("accountNames", accountNames);

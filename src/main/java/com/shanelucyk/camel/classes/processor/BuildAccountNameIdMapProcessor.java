@@ -8,11 +8,12 @@ import org.apache.camel.salesforce.dto.Account;
 import org.apache.camel.salesforce.dto.QueryRecordsAccount;
 import org.apache.camel.salesforce.dto.QueryRecordsContact;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
 @Slf4j
-@Configuration
+@Component
 public class BuildAccountNameIdMapProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -20,7 +21,7 @@ public class BuildAccountNameIdMapProcessor implements Processor {
         QueryRecordsAccount accounts = exchange.getIn().getBody(QueryRecordsAccount.class);
         HashMap<String, String> accountMap = new HashMap();
         for(Account a: accounts.getRecords()){
-            log.info("Adding {}:{}", a.getName(), a.getId());
+            log.debug("Adding {}:{}", a.getName(), a.getId());
             accountMap.put(a.getName(), a.getId());
         }
         exchange.setProperty("accountMap", accountMap);

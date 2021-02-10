@@ -9,11 +9,12 @@ import org.apache.camel.salesforce.dto.Contact;
 import org.apache.camel.salesforce.dto.QueryRecordsAccount;
 import org.apache.camel.salesforce.dto.QueryRecordsContact;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
 @Slf4j
-@Configuration
+@Component
 public class BuildContactZidIdMapProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -22,8 +23,7 @@ public class BuildContactZidIdMapProcessor implements Processor {
         HashMap<String, String> accountMap = new HashMap();
         for(Contact a: contacts.getRecords()){
             if(a.getZohoContactID__c() == null)
-
-                log.info("Adding {}:{} to zidMap", a.getZohoContactID__c(), a.getId());
+                log.debug("Adding {}:{} to zidMap", a.getZohoContactID__c(), a.getId());
             accountMap.put(a.getZohoContactID__c(), a.getId());
         }
         exchange.setProperty("contactZMap", accountMap);

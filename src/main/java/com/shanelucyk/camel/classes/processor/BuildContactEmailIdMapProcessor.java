@@ -9,11 +9,12 @@ import org.apache.camel.salesforce.dto.Contact;
 import org.apache.camel.salesforce.dto.QueryRecordsAccount;
 import org.apache.camel.salesforce.dto.QueryRecordsContact;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
 @Slf4j
-@Configuration
+@Component
 public class BuildContactEmailIdMapProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -21,7 +22,7 @@ public class BuildContactEmailIdMapProcessor implements Processor {
         QueryRecordsContact contacts = exchange.getIn().getBody(QueryRecordsContact.class);
         HashMap<String, String> contactMap = new HashMap();
         for(Contact a: contacts.getRecords()){
-            log.info("Adding {}:{}", a.getEmail(), a.getId());
+            log.debug("Adding {}:{}", a.getEmail(), a.getId());
             contactMap.put(a.getEmail(), a.getId());
         }
         exchange.setProperty("contactMap", contactMap);

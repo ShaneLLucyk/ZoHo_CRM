@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Configuration
+@Component
 public class SeperateAccountProcessor implements Processor {
 
 
@@ -22,7 +23,6 @@ public class SeperateAccountProcessor implements Processor {
         ArrayList<ZCRMRecord> accounts = exchange.getProperty("Accounts", ArrayList.class);
         ArrayList<ZCRMRecord> createList = new ArrayList<>();
         ArrayList<ZCRMRecord> updateList = new ArrayList<>();
-//        ArrayList<String> accountNames = (ArrayList<String>) (exchange.getProperty("accountMap", HashMap.class).keySet().stream().collect(Collectors.toList()));
         ArrayList<String> zids = (ArrayList<String>) (exchange.getProperty("accountZMap", HashMap.class).keySet().stream().collect(Collectors.toList()));
 
         for(ZCRMRecord account: accounts){
@@ -39,6 +39,8 @@ public class SeperateAccountProcessor implements Processor {
 
         exchange.setProperty("createList", createList);
         exchange.setProperty("updateList", updateList);
+
+        exchange.setProperty("accSuccessList", new ArrayList<>());
         log.info("Account Create Size: {}, Update Size: {}", createList.size(), updateList.size());
     }
 }

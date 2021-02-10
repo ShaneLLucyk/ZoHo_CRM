@@ -6,6 +6,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.salesforce.dto.*;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
-@Configuration
+@Component
 public class ConvertZohoAccountProcessor implements Processor {
 
 
@@ -40,8 +41,6 @@ public class ConvertZohoAccountProcessor implements Processor {
 
         for(ZCRMRecord zohoAccount: (ArrayList<ZCRMRecord>) exchange.getProperty("processList", ArrayList.class)){
             try{
-                log.debug("Contact Full Name: {}", (String) zohoAccount.getFieldValue("Account_Name"));
-
                 //Build Mappings for ZOHO Account to Salesforce Account
                 Account newAccount = new Account();
 
@@ -51,23 +50,30 @@ public class ConvertZohoAccountProcessor implements Processor {
                 newAccount.setZohoAccountID__c(zohoAccount.getEntityId().toString());
 
 
-
                 newAccount.setName((String) zohoAccount.getFieldValue("Account_Name"));
-
                 newAccount.setFieldsToNull(generateNullSet());
-
 
                 newAccount.setDescription((String) zohoAccount.getFieldValue("Description"));
                 newAccount.setPhone((String) zohoAccount.getFieldValue("Phone"));
                 newAccount.setFax((String) zohoAccount.getFieldValue("Fax"));
                 newAccount.setWebsite((String) zohoAccount.getFieldValue("Website"));
-                newAccount.setTickerSymbol((String) zohoAccount.getFieldValue("Ticker_Symbol"));
-                newAccount.setSic((String) zohoAccount.getFieldValue("SIC_Code"));
                 newAccount.setAccountNumber((String) zohoAccount.getFieldValue("Account_Number"));
                 newAccount.setSite((String) zohoAccount.getFieldValue("Account_Site"));
-                newAccount.setNumberOfEmployees((int) zohoAccount.getFieldValue("Employees"));
-                newAccount.setAnnualRevenue((double) (int) zohoAccount.getFieldValue("Annual_Revenue"));
+                log.debug("Basic Account Information Set");
 
+                newAccount.setTickerSymbol((String) zohoAccount.getFieldValue("Ticker_Symbol"));
+
+                if(zohoAccount.getFieldValue("SIC_Code") != null){
+                    newAccount.setSic(String.valueOf((int)zohoAccount.getFieldValue("SIC_Code")));
+                }
+
+                if( zohoAccount.getFieldValue("Employees") != null){
+                    newAccount.setNumberOfEmployees((int) zohoAccount.getFieldValue("Employees"));
+                }
+                if( zohoAccount.getFieldValue("Annual_Revenue") != null){
+                    newAccount.setAnnualRevenue((double) (int) zohoAccount.getFieldValue("Annual_Revenue"));
+                }
+                log.debug("Business Information Set");
 
 
                 newAccount.setBillingStreet((String) zohoAccount.getFieldValue("Billing_Street"));
@@ -75,13 +81,14 @@ public class ConvertZohoAccountProcessor implements Processor {
                 newAccount.setBillingState((String) zohoAccount.getFieldValue("Billing_State"));
                 newAccount.setBillingCountry((String) zohoAccount.getFieldValue("Billing_Country"));
                 newAccount.setBillingPostalCode((String) zohoAccount.getFieldValue("Billing_Code"));
-
+                log.debug("Billing Information Set");
 
                 newAccount.setShippingStreet((String) zohoAccount.getFieldValue("Shipping_Street"));
                 newAccount.setShippingCity((String) zohoAccount.getFieldValue("Shipping_City"));
                 newAccount.setShippingState((String) zohoAccount.getFieldValue("Shipping_State"));
                 newAccount.setShippingCountry((String) zohoAccount.getFieldValue("Shipping_Country"));
                 newAccount.setShippingPostalCode((String) zohoAccount.getFieldValue("Shipping_Code"));
+                log.debug("Shipping Information Set");
 
                 //Picklists:
                 //Account Type
@@ -95,6 +102,7 @@ public class ConvertZohoAccountProcessor implements Processor {
                 //Ownership
                 String zohoOwnership = (String) zohoAccount.getFieldValue("Ownership");
                 populateOwnership(zohoOwnership, newAccount);
+                log.debug("Picklists Set");
 
 
 

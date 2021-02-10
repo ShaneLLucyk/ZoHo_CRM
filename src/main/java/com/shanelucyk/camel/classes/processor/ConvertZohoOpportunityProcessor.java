@@ -6,6 +6,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.salesforce.dto.*;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
-@Configuration
+@Component
 public class ConvertZohoOpportunityProcessor implements Processor {
 
 

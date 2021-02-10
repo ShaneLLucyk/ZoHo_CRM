@@ -8,11 +8,12 @@ import org.apache.camel.salesforce.dto.Contact;
 import org.apache.camel.salesforce.dto.QueryRecordsContact;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
 @Slf4j
-@Configuration
+@Component
 public class GetSalesforceContactEmailsProcessor implements Processor {
     @Autowired
     ZohoConfig zohoConfig;

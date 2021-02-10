@@ -17,5 +17,10 @@ public class SlackContext {
     @Value("${slack.webhook.path}")
     public String PATH;
 
+    @Value("${slack.channel.warning}")
+    public String warningChannel;
+
+    @Value("${slack.channel.general}")
+    public String generalChannel;
 
 }
