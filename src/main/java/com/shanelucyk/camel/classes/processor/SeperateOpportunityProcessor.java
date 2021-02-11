@@ -35,7 +35,7 @@ public class SeperateOpportunityProcessor implements Processor {
                 createList.add(opportunity);
             }
         }
-
+        exchange.removeProperty("Opportunities");
         exchange.setProperty("createList", createList);
         exchange.setProperty("updateList", updateList);
         exchange.setProperty("oppSuccessList", new ArrayList<>());

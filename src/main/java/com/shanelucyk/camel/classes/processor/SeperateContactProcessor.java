@@ -38,7 +38,7 @@ public class SeperateContactProcessor implements Processor {
                 createList.add(contact);
             }
         }
-
+        exchange.removeProperty("Contacts");
         exchange.setProperty("createList", createList);
         exchange.setProperty("updateList", updateList);
         exchange.setProperty("conSuccessList", new ArrayList<>());

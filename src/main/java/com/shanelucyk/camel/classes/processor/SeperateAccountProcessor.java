@@ -36,7 +36,7 @@ public class SeperateAccountProcessor implements Processor {
                 createList.add(account);
             }
         }
-
+        exchange.removeProperty("Accounts");
         exchange.setProperty("createList", createList);
         exchange.setProperty("updateList", updateList);
 

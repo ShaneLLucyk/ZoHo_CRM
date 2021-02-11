@@ -15,9 +15,12 @@ public class SummaryProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        ArrayList<String> opportunitySuccess = exchange.getProperty("oppSuccessList", ArrayList.class);
-        ArrayList<String> contactSuccess = exchange.getProperty("conSuccessList", ArrayList.class);
-        ArrayList<String> accountSuccess = exchange.getProperty("accSuccessList", ArrayList.class);
+        ArrayList<String> opportunitySuccess = (exchange.getProperty("oppSuccessList", ArrayList.class) != null? exchange.getProperty("oppSuccessList", ArrayList.class): new ArrayList<>());
+        ArrayList<String> contactSuccess = (exchange.getProperty("conSuccessList", ArrayList.class) != null? exchange.getProperty("conSuccessList", ArrayList.class): new ArrayList<>());
+        ArrayList<String> accountSuccess = (exchange.getProperty("accSuccessList", ArrayList.class) != null? exchange.getProperty("accSuccessList", ArrayList.class): new ArrayList<>());
+
+
+
 
         StringBuilder accountSync = new StringBuilder();
         StringBuilder accountCreate = new StringBuilder();

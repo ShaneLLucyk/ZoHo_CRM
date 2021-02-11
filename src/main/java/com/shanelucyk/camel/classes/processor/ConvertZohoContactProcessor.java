@@ -42,7 +42,7 @@ public class ConvertZohoContactProcessor implements Processor {
 
 
         //Assertions:
-        assert(contactMap != null);
+//        assert(contactMap != null);
         assert(accountMap != null);
         assert(errors != null);
 

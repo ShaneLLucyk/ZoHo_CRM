@@ -35,7 +35,6 @@ public class ConvertZohoAccountProcessor implements Processor {
             errors = new ArrayList<>();
 
         //Assertions
-        assert(accountMap != null);
         assert(errors != null);
 
 

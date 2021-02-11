@@ -34,6 +34,18 @@ public class ApplicationConfig {
     @Value("${cron.schedule}")
     String cronSchedule;
 
+    @Getter
+    @Value("${error.delay}")
+    int retryDelay;
+
+    @Getter
+    @Value("${error.retries}")
+    int retries;
+
+    @Getter
+    @Value("${error.backoff}")
+    int backoff;
+
 
     @Bean(name = "jsonObjectMapper")
     @Primary

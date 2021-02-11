@@ -102,12 +102,11 @@ public class DemoRoutes extends RouteBuilder {
 
         onException()
                 .routeId("Default Error Handler")
-                .log("Default Error Handler: ${body}")
-                .redeliveryDelay(5000)
-                .maximumRedeliveries(3)
+                .log("Default Error Handler")
+                .redeliveryDelay(config.getRetryDelay())
+                .maximumRedeliveries(config.getRetries())
                 .retryAttemptedLogLevel(LoggingLevel.ERROR)
-                .backOffMultiplier(1)
-                .maximumRedeliveryDelay(120000)
+                .backOffMultiplier(config.getBackoff())
                 .process(exchange -> {
                     Exception e = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
                     if( e != null){

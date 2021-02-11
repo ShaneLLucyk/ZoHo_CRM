@@ -31,6 +31,7 @@ public class ConvertZohoOpportunityProcessor implements Processor {
         HashMap<String, String> opportunityMap = null;
         if(update){
             opportunityMap = (exchange.getProperty("opportunityZMap", HashMap.class));
+            assert(opportunityMap != null);
         }
 
         //Error Handling Map
@@ -39,7 +40,6 @@ public class ConvertZohoOpportunityProcessor implements Processor {
             errors = new ArrayList<>();
 
         //Assertions
-        assert(opportunityMap != null);
         assert(accountMap != null);
         assert(errors != null);
 
