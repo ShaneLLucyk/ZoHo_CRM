@@ -21,7 +21,7 @@ public class ConvertZohoOpportunityProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        log.info("Process: Starting Opportunity Transformation");
+        log.debug("Process: Starting Opportunity Transformation");
         ArrayList<Opportunity> newOpportunities = new ArrayList<>();
         boolean update = exchange.getProperty("updateFlag", Boolean.class);
 

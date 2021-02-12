@@ -18,7 +18,7 @@ public class SeperateOpportunityProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        log.info("Process: Seperate Opportunities");
+        log.debug("Process: Seperate Opportunities");
         ArrayList<ZCRMRecord> opportunties = exchange.getProperty("Opportunities", ArrayList.class);
         ArrayList<ZCRMRecord> createList = new ArrayList<>();
         ArrayList<ZCRMRecord> updateList = new ArrayList<>();

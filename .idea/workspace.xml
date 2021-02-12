@@ -23,49 +23,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="51f54fea-e956-4523-8612-a2531da54a3d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/shanelucyk/camel/Processor_Tests/Convert/ConvertAccountFromZohoTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/shanelucyk/camel/Processor_Tests/Convert/ConvertContactFromZohoTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/shanelucyk/camel/Processor_Tests/Convert/ConvertOpportunityFromZohoTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/shanelucyk/camel/Processor_Tests/Error_Handling/GeneralErrorProcessorTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/shanelucyk/camel/Processor_Tests/Seperate/SeperateAccountTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/shanelucyk/camel/Processor_Tests/Seperate/SeperateContactTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/shanelucyk/camel/Processor_Tests/Seperate/SeperateOpportunityTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/shanelucyk/camel/Processor_Tests/Summary/SummaryProcessorTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/zoho_Contacts.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/salesforce-prototype.iml" beforeDir="false" afterPath="$PROJECT_DIR$/salesforce-prototype.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/config/ApplicationConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/config/ApplicationConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/config/ZohoConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/config/ZohoConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/BuildAccountNameIdMapProcessor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/BuildContactEmailIdMapProcessor.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/ConvertZohoAccountProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/ConvertZohoAccountProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/ConvertZohoContactProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/ConvertZohoContactProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/ConvertZohoOpportunityProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/ConvertZohoOpportunityProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/GetSalesforceAccountNamesProcessor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/GetSalesforceContactEmailsProcessor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/RetrieveZohoContactsProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/RetrieveZohoContactsProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SeperateAccountProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SeperateAccountProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SeperateContactProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SeperateContactProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SeperateOpportunityProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SeperateOpportunityProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SummaryProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/SummaryProcessor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/routes/DemoRoutes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/routes/DemoRoutes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-local.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/oauthtokens.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/oauthtokens.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/config/ApplicationConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/config/ApplicationConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/config/ZohoConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/config/ZohoConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/BuildAccountNameIdMapProcessor.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/BuildContactEmailIdMapProcessor.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/ConvertZohoAccountProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/ConvertZohoAccountProcessor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/ConvertZohoContactProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/ConvertZohoContactProcessor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/ConvertZohoOpportunityProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/ConvertZohoOpportunityProcessor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/GetSalesforceAccountNamesProcessor.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/GetSalesforceContactEmailsProcessor.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/SeperateAccountProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/SeperateAccountProcessor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/SeperateContactProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/SeperateContactProcessor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/SeperateOpportunityProcessor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/processor/SeperateOpportunityProcessor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/routes/DemoRoutes.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/shanelucyk/camel/classes/routes/DemoRoutes.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/oauthtokens.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/oauthtokens.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application-local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application-local.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -230,12 +199,12 @@
     </configuration>
     <list>
       <item itemvalue="Application.Run" />
-      <item itemvalue="Maven.salesforce-prototype" />
       <item itemvalue="JUnit.SummaryProcessorTest.SummaryTest_Both_All" />
       <item itemvalue="JUnit.SummaryProcessorTest.SummaryTest_Nothing_All" />
       <item itemvalue="JUnit.SummaryProcessorTest.SummaryTest_UpdateOnly_All" />
       <item itemvalue="JUnit.SummaryProcessorTest" />
       <item itemvalue="JUnit.GeneralErrorProcessorTest.GeneralErrorSummary" />
+      <item itemvalue="Maven.salesforce-prototype" />
     </list>
     <recent_temporary>
       <list>
@@ -312,46 +281,46 @@
     </state>
     <state x="-1180" y="245" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612675779882" />
     <state x="740" y="245" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1612541931841" />
-    <state width="1876" height="512" key="GridCell.Tab.0.bottom" timestamp="1613071967520">
+    <state width="1876" height="512" key="GridCell.Tab.0.bottom" timestamp="1613074393994">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="277" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612672672808" />
-    <state width="1876" height="512" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613071967520" />
-    <state width="1876" height="512" key="GridCell.Tab.0.center" timestamp="1613071967520">
+    <state width="1876" height="512" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613074393994" />
+    <state width="1876" height="512" key="GridCell.Tab.0.center" timestamp="1613074393994">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="277" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612672672808" />
-    <state width="1876" height="512" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613071967520" />
-    <state width="1876" height="512" key="GridCell.Tab.0.left" timestamp="1613071967520">
+    <state width="1876" height="512" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613074393994" />
+    <state width="1876" height="512" key="GridCell.Tab.0.left" timestamp="1613074393993">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="277" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612672672808" />
-    <state width="1876" height="512" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613071967520" />
-    <state width="1876" height="512" key="GridCell.Tab.0.right" timestamp="1613071967520">
+    <state width="1876" height="512" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613074393993" />
+    <state width="1876" height="512" key="GridCell.Tab.0.right" timestamp="1613074393994">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="277" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612672672808" />
-    <state width="1876" height="512" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613071967520" />
-    <state width="1876" height="342" key="GridCell.Tab.1.bottom" timestamp="1613071347252">
+    <state width="1876" height="512" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613074393994" />
+    <state width="1876" height="342" key="GridCell.Tab.1.bottom" timestamp="1613072656375">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="342" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612663383461" />
-    <state width="1876" height="342" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613071347252" />
-    <state width="1876" height="342" key="GridCell.Tab.1.center" timestamp="1613071347252">
+    <state width="1876" height="342" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613072656375" />
+    <state width="1876" height="342" key="GridCell.Tab.1.center" timestamp="1613072656375">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="342" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612663383460" />
-    <state width="1876" height="342" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613071347252" />
-    <state width="1876" height="342" key="GridCell.Tab.1.left" timestamp="1613071347252">
+    <state width="1876" height="342" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613072656375" />
+    <state width="1876" height="342" key="GridCell.Tab.1.left" timestamp="1613072656375">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="342" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612663383460" />
-    <state width="1876" height="342" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613071347252" />
-    <state width="1876" height="342" key="GridCell.Tab.1.right" timestamp="1613071347252">
+    <state width="1876" height="342" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613072656375" />
+    <state width="1876" height="342" key="GridCell.Tab.1.right" timestamp="1613072656375">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1876" height="342" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1612663383461" />
-    <state width="1876" height="342" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613071347252" />
+    <state width="1876" height="342" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1613072656375" />
     <state x="490" y="173" key="Maven.ArtifactSearchDialog" timestamp="1612495719459">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -393,12 +362,12 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/ConvertZohoAccountProcessor.java</url>
-          <line>114</line>
+          <line>115</line>
           <option name="timeStamp" value="83" />
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/shanelucyk/camel/classes/processor/ConvertZohoAccountProcessor.java</url>
-          <line>109</line>
+          <line>110</line>
           <option name="timeStamp" value="87" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

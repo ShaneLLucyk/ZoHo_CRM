@@ -19,7 +19,7 @@ public class SeperateAccountProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        log.info("Process: Seperate Accounts");
+        log.debug("Process: Seperate Accounts");
         ArrayList<ZCRMRecord> accounts = exchange.getProperty("Accounts", ArrayList.class);
         ArrayList<ZCRMRecord> createList = new ArrayList<>();
         ArrayList<ZCRMRecord> updateList = new ArrayList<>();

@@ -22,7 +22,7 @@ public class RetrieveZohoContactsProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws Exception {
 
-        log.info("Retrieving Accounts from Zoho");
+        log.info("Retrieving Contacts from Zoho");
         ZCRMModule mod = zohoConfig.getZohoClient().getModuleInstance("contacts");
         log.debug("After Module Retrieval");
         BulkAPIResponse records = mod.getRecords();

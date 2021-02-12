@@ -26,7 +26,7 @@ public class ConvertZohoContactProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        log.info("Process: Starting Contact Transformation");
+        log.debug("Process: Starting Contact Transformation");
         ArrayList<Contact> newContacts = new ArrayList<>();
 
         HashMap<String, String> accountMap = exchange.getProperty("accountZMap", HashMap.class);

@@ -20,7 +20,7 @@ public class SeperateContactProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        log.info("Process: Separate Contacts");
+        log.debug("Process: Separate Contacts");
 
         ArrayList<ZCRMRecord> contacts = exchange.getProperty("Contacts", ArrayList.class);
         ArrayList<ZCRMRecord> createList = new ArrayList<>();

@@ -21,7 +21,7 @@ public class ConvertZohoAccountProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        log.info("Process: Starting Account Transformation");
+        log.debug("Process: Starting Account Transformation");
         ArrayList<Account> newAccounts = new ArrayList<>();
         boolean update = exchange.getProperty("updateFlag", Boolean.class);
         HashMap<String, String> accountMap = null;
@@ -107,6 +107,7 @@ public class ConvertZohoAccountProcessor implements Processor {
 
                 newAccounts.add(newAccount);
             }catch (Exception e){
+                log.warn("Record Failure in Account Conversion: {}\n{}",(String) zohoAccount.getFieldValue("Account_Name"), e.getClass().getSimpleName() + ": " + e.getMessage());
                 errors.add((String) zohoAccount.getFieldValue("Account_Name") + "_" +  "Type=Account, Error=" + e.getClass().getSimpleName() + ": " + e.getMessage());
             }
         }

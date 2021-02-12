@@ -131,12 +131,15 @@ public class DemoRoutes extends RouteBuilder {
                 .to("direct:ContactProcess")
                 .to("direct:PropertyCleanup")
                 .to("direct:OpportunityProcess")
+                .log("Standard Processing Complete. Starting Error and Summary Processing.")
                 .choice()
                     .when(simple("${exchangeProperty.errorList.size} != 0"))
+                        .log("Errors Occured During Main Processing.")
                         .to("direct:processIndividualErrors")
                         .process(summaryProcessor)
                         .to("direct:sendSlackGeneralMessage")
-                .otherwise().log("No Errors Found")
+                    .otherwise()
+                        .log("No Errors Found.")
                         .process(summaryProcessor)
                         .to("direct:sendSlackGeneralMessage")
                 .end()
@@ -162,7 +165,8 @@ public class DemoRoutes extends RouteBuilder {
                         .to("direct:updateAccounts")
                     .otherwise().log("No Accounts to Update")
                 .end()
-                .log("After Accounts Are Finished");
+                .log("Accounts Are Finished")
+                .end();
 
 
         from("direct:ContactProcess").routeId("ContactProcessRoute")
@@ -184,7 +188,8 @@ public class DemoRoutes extends RouteBuilder {
                         .to("direct:updateContacts")
                     .otherwise().log("No Contacts to Update")
                 .end()
-                .log("After Contact Creation");
+                .log("Contacts Are Finished")
+                .end();
 
         from("direct:OpportunityProcess").routeId("OpportunityProcessRoute")
                 //Opportunity Processing
@@ -204,7 +209,7 @@ public class DemoRoutes extends RouteBuilder {
                         .to("direct:updateOpportunity")
                     .otherwise().log("No Opportunities to Update")
                 .end()
-
+                .log("Opportunities Are Finished")
                 .end();
 
 
